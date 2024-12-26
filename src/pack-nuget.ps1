@@ -1,3 +1,21 @@
+#Information to publish the nuget packages
+$nugetExePath = "C:\git\nuget\nuget.exe"  # Path to nuget.exe
+$apiKeyFilePath = "C:\git\nuget\apikey.txt"  # Path to the file containing your NuGet API key
+$source = "https://api.nuget.org/v3/index.json"  # NuGet source URL
+
+# Ensure the API key file exists
+if (-Not (Test-Path $apiKeyFilePath)) {
+    Write-Error "API key file not found at $apiKeyFilePath"
+    exit 1
+}
+
+# Read the API key from the file
+$apiKey = Get-Content -Path $apiKeyFilePath -Raw
+if ([string]::IsNullOrWhiteSpace($apiKey)) {
+    Write-Error "API key is empty or invalid"
+    exit 1
+}
+
 # Get all .csproj files in the current directory and subdirectories
 $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse
 
@@ -74,6 +92,29 @@ foreach ($csprojFile in $csprojFiles) {
                 dotnet pack -c Release
                 if ($LASTEXITCODE -eq 0) {
                     Write-Host "Build and pack completed successfully for $($csprojFile.Name)."
+					# Publishing the nuget package
+					# Find the generated .nupkg file
+					Write-Output "Looking for packages to publish at $($projectDirectory)"
+					$nupkgFile = Get-ChildItem -Path $projectDirectory -Filter *.nupkg -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+					if (-Not $nupkgFile) {
+						Write-Error "No .nupkg file found in $($projectDirectory)"
+						exit 1
+					}
+					# Push the package to NuGet
+					& $nugetExePath push $nupkgFile.FullName -ApiKey $apiKey -Source $source
+					Write-Output "NuGet package published successfully."
+					
+					# Find the generated .snupkg symbos file
+					$nupkgSymFile = Get-ChildItem -Path $projectDirectory -Filter *.snupkg -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+					if (-Not $nupkgFile) {
+						Write-Warning "No .nupkg file found in $($projectDirectory)"
+					}
+					else{
+						# Push the package to Symbos NuGet
+						& $nugetExePath push $nupkgSymFile.FullName -ApiKey $apiKey -Source $source
+						Write-Output "NuGet Symbos package published successfully."
+					}
+					
                 } else {
                     Write-Error "Pack failed for $($csprojFile.Name). Please check the logs for details."
                 }

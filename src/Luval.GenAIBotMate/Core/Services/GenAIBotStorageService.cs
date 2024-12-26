@@ -55,7 +55,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 chatbot.UtcUpdatedOn = DateTime.UtcNow;
                 chatbot.Version = 1;
 
-                await _dbContext.Chatbots.AddAsync(chatbot, cancellationToken);
+                await _dbContext.GenAIBots.AddAsync(chatbot, cancellationToken);
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 _logger.LogInformation("Chatbot created successfully with ID {ChatbotId}.", chatbot.Id);
                 return chatbot;
@@ -76,7 +76,7 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <returns>The chatbot entity if found; otherwise, null.</returns>
         public async Task<GenAIBot?> GetChatbotAsync(ulong chatbotId, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Chatbots
+            return await _dbContext.GenAIBots
                 .Include(x => x.ChatSessions)
                 .SingleOrDefaultAsync(x => x.Id == chatbotId, cancellationToken);
         }
@@ -104,7 +104,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 chatbot.Version++;
 
                 if (!isTracked)
-                    _dbContext.Chatbots.Update(chatbot);
+                    _dbContext.GenAIBots.Update(chatbot);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 _logger.LogInformation("Chatbot updated successfully with ID {ChatbotId}.", chatbot.Id);
@@ -134,7 +134,7 @@ namespace Luval.GenAIBotMate.Core.Services
             }
             try
             {
-                _dbContext.Chatbots.Remove(chatbot);
+                _dbContext.GenAIBots.Remove(chatbot);
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 _logger.LogInformation("Chatbot with ID {ChatbotId} deleted successfully.", chatbotId);
             }

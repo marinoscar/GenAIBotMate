@@ -26,9 +26,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
         public DbSet<ChatMessage> ChatMessages { get; set; }
 
         /// <summary>
-        /// The DbSet representing the ChatAgent table.
+        /// The DbSet representing the GenAIBot table.
         /// </summary>
-        public DbSet<GenAIBot> Chatbots { get; set; }
+        public DbSet<GenAIBot> GenAIBots { get; set; }
 
         /// <summary>
         /// The DbSet representing the ChatMessageMedia table.

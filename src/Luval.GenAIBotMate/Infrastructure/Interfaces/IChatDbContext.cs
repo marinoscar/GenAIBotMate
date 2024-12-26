@@ -5,7 +5,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
 {
     public interface IChatDbContext
     {
-        DbSet<GenAIBot> Chatbots { get; set; }
+        DbSet<GenAIBot> GenAIBots { get; set; }
         DbSet<ChatMessage> ChatMessages { get; set; }
         DbSet<ChatSession> ChatSessions { get; set; }
 

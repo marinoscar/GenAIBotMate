@@ -40,7 +40,7 @@ namespace Luval.GenAIBotMate.Tests
 
             Action<MemoryDataContext> contextSetup = (c) =>
             {
-                c.Chatbots.Add(chatbot);
+                c.GenAIBots.Add(chatbot);
                 c.SaveChanges();
             };
 
@@ -77,9 +77,9 @@ namespace Luval.GenAIBotMate.Tests
 
             var service = CreateService(context =>
             {
-                context.Chatbots.Add(expectedChatbot);
+                context.GenAIBots.Add(expectedChatbot);
                 context.SaveChanges();
-                chatbotId = context.Chatbots.First().Id;
+                chatbotId = context.GenAIBots.First().Id;
                 var chatSession = new ChatSession
                 {
                     GenAIBotId = chatbotId,
@@ -129,7 +129,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Old Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 chatbotId = chatbot.Id;
             });
@@ -189,7 +189,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Chatbot to Delete",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 chatbotId = chatbot.Id;
             });
@@ -229,7 +229,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 chatbotId = chatbot.Id;
             });
@@ -291,7 +291,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 var chatSession = new ChatSession
                 {
@@ -360,7 +360,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 var chatSession = new ChatSession
                 {
@@ -408,7 +408,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1,
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 var chatSession = new ChatSession
                 {
@@ -484,7 +484,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 var chatSession = new ChatSession
                 {
@@ -552,7 +552,7 @@ namespace Luval.GenAIBotMate.Tests
                     Name = "Test Chatbot",
                     AccountId = 1
                 };
-                context.Chatbots.Add(chatbot);
+                context.GenAIBots.Add(chatbot);
                 context.SaveChanges();
                 var chatSession = new ChatSession
                 {

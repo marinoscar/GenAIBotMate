@@ -52,7 +52,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);
@@ -81,7 +81,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);
@@ -118,7 +118,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);
@@ -159,7 +159,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);
@@ -194,7 +194,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);
@@ -243,7 +243,7 @@ namespace Luval.GenAIBotMate.Tests
                     AccountId = 1,
                     Name = "Test Chatbot"
                 };
-                c!.Chatbots.Add(cb);
+                c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
                 chatbotId = cb.Id;
             }, null);

@@ -41,7 +41,7 @@ namespace Luval.GenAIBotMate.Tests.Helpers
                 UtcUpdatedOn = DateTime.UtcNow
             };
 
-            Chatbots.Add(chatbot);
+            GenAIBots.Add(chatbot);
             SaveChanges();
         }
 
