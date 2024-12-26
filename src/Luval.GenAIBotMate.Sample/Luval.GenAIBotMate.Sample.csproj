@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.*-*" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.*-*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luval.GenAIBotMate.Components\Luval.GenAIBotMate.Components.csproj" />
+    <ProjectReference Include="..\Luval.GenAIBotMate\Luval.GenAIBotMate.csproj" />
+  </ItemGroup>
 </Project>
