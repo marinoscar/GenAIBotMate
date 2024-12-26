@@ -21,6 +21,8 @@
     <ApplicationIcon>logo_icon.ico</ApplicationIcon>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageIcon>logo-full-nobg.png</PackageIcon>
+    <Description>GenAIBotMate is a C# library that enables developers to interface with Large Language Models (LLMs), persist chat conversations, and provide an API to retrieve past interactions. The library also supports persisting uploaded files, including images, to cloud storage providers like Azure Blob Storage</Description>
+    <PackageReleaseNotes>- Initial release</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,6 +38,13 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Luval.AuthMate" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.32.0" />
   </ItemGroup>
 
 </Project>

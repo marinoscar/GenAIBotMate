@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luval.GenAIBotMate", "Luval.GenAIBotMate\Luval.GenAIBotMate.csproj", "{1AB2BEFB-AC95-49B3-B607-D06C756BF4E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luval.GenAIBotMate.Tests", "Luval.GenAIBotMate.Tests\Luval.GenAIBotMate.Tests.csproj", "{5E0E799E-9D85-4EAC-B837-BE22441EE1F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1AB2BEFB-AC95-49B3-B607-D06C756BF4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AB2BEFB-AC95-49B3-B607-D06C756BF4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AB2BEFB-AC95-49B3-B607-D06C756BF4E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E0E799E-9D85-4EAC-B837-BE22441EE1F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E0E799E-9D85-4EAC-B837-BE22441EE1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E0E799E-9D85-4EAC-B837-BE22441EE1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E0E799E-9D85-4EAC-B837-BE22441EE1F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
