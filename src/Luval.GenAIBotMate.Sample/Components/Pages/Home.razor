@@ -11,9 +11,9 @@
 <PageTitle>Home</PageTitle>
 
 <GenAIBotMateControl @ref="Control" 
-    IsLoading="@homePresenter.IsLoading"
-    IsStreaming="@homePresenter.IsStreaming"
-    Messages="@homePresenter.Messages">
+IsLoading="@homePresenter.IsLoading"
+IsStreaming="@homePresenter.IsStreaming"
+Messages="@homePresenter.Messages">
 
 </GenAIBotMateControl>
 
@@ -28,11 +28,13 @@
 
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender){
-            homePresenter.Initialize(Control);
+        if (firstRender)
+        {
+            await homePresenter.InitializeAsync(Control);
         }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private void UpdateState(object sender, EventArgs e)

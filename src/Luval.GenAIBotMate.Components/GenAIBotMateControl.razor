@@ -1,6 +1,4 @@
-﻿@using System.Diagnostics
-
-<style>
+﻿<style>
 
     .chat-card {
     border: 1px solid var(--accent-fill-rest);
@@ -24,15 +22,34 @@
     }
 
     @@media(max-width: 768px) {
-    .chat-box {
-    width: calc(100% - 50px); /* Adjusts width for smaller screens */
+        .chat-box {
+        width: calc(100% - 50px); /* Adjusts width for smaller screens */
+        }
     }
+
+    /* Scroll-to-bottom button */
+    .scroll-button {
+        position: fixed; /* Fixes the button relative to the viewport */
+        left: calc(50% + 100px); /* Centers the button horizontally within the content area */
+        transform: translateX(-50%); /* Adjusts for exact centering */
+        background-color: #007bff; /* Button background color */
+        color: white; /* Button text color */
+        border: none; /* Removes the default border */
+        border-radius: 50%; /* Makes the button circular */
+        width: 40px; /* Fixed width for the button */
+        height: 40px; /* Fixed height for the button */
+        display: none; /* Initially hides the button */
+        justify-content: center; /* Centers the content inside the button */
+        align-items: center; /* Centers the content inside the button */
+        cursor: pointer; /* Changes the cursor to a pointer on hover */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
     }
+
+        .scroll-button.show {
+            display: flex; /* Shows the button when necessary */
+        }
 
 </style>
-<script>
-
-</script>
 
 <div>
     <FluentLayout>
@@ -43,34 +60,36 @@
             <FluentSpacer />
             <FluentAnchor Href="/swagger" Target="_blank">API</FluentAnchor>
         </FluentHeader>
-        @if (IsLoading)
-        {
-            <FluentProgressRing style="width: 82px; height: 82px; position:absolute; top:0px; left:0px;"></FluentProgressRing>
-        }
-        else
-        {
-            @if (this.Messages != null && this.Messages.Any())
+        <div id="content-list">
+            @if (IsLoading)
             {
-                Debug.WriteLine(string.Join(";", this.Messages.Select(i => i.AgentResponse)));
-                @foreach (var msg in this.Messages)
-                {
-                    <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
-                }
+                <FluentProgressRing style="width: 82px; height: 82px; position:absolute; top:0px; left:0px;"></FluentProgressRing>
             }
             else
             {
-                @if (!IsStreaming){
-                    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;width:95%">
-                        <h1>@InitialMessage</h1>
-                    </div>
+                @if (this.Messages != null && this.Messages.Any())
+                {
+                    @foreach (var msg in this.Messages)
+                    {
+                        <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
+                    }
+                }
+                else
+                {
+                    @if (!IsStreaming)
+                    {
+                        <div style="display: flex;justify-content: center;align-items: center;height: 80vh;width:95%">
+                            <h1>@InitialMessage</h1>
+                        </div>
+                    }
+                }
+                @if (IsStreaming)
+                {
+                    <ChatMessageContent UserMessage="@userMessage" AgentResponse="@agentStreamMessage" />
                 }
             }
-            @if (IsStreaming)
-            {
-                <ChatMessageContent UserMessage="@userMessage" AgentResponse="@agentStreamMessage" />
-            }
-        }
-        <FluentSpacer />
+            <div id="focus-item" style="height:125px"></div>
+        </div>
         <div class="chat-box">
             <FluentCard Class="chat-card">
                 <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
@@ -78,9 +97,64 @@
                     <FluentButton Appearance="Appearance.Accent"
                                   IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
                                   Style="margin-top:6px;"
-                                  OnClick="OnSubmitClicked" />
+                                  OnClick="OnSubmitClicked"
+                                  Disabled="@IsLoading"/>
                 </FluentStack>
             </FluentCard>
         </div>
     </FluentLayout>
 </div>
+
+<script>
+    window.scrollToBottom = function() {
+        var el = document.getElementById("focus-item");
+        if (el) {
+            const pos = el.getBoundingClientRect().top + window.scrollY;
+            const target = pos - 150; // Adjust target position by offset
+            console.log("called the scroll method with pos: " + pos + " and target: " + target) ;
+            el.scrollIntoView({ behavior: 'smooth',top: target });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Select the chat content list element and the textarea
+      const contentList = document.getElementById("content-list");
+      const textArea = document.querySelector(".chat-box");
+
+      // Create the scroll-to-bottom button
+      const scrollButton = document.createElement("button");
+      scrollButton.classList.add("scroll-button");
+      scrollButton.innerHTML = "&#8595;"; // Down arrow icon
+
+      // Add the button to the body
+      document.body.appendChild(scrollButton);
+
+      // Function to update the position of the scroll button dynamically
+      function updateScrollButtonPosition() {
+        const textAreaHeight = textArea.offsetHeight; // Get the current height of the textarea
+        scrollButton.style.bottom = `${textAreaHeight + 10}px`; // Set the bottom property dynamically
+      }
+
+      // Update the button position initially
+      updateScrollButtonPosition();
+
+      // Add a resize observer to adjust the position when the textarea size changes
+      new ResizeObserver(updateScrollButtonPosition).observe(textArea);
+
+      // Add a scroll event listener to the content list
+      contentList.addEventListener("scroll", () => {
+        // Show the button if the user scrolls up (content is not fully scrolled to the bottom)
+        if (contentList.scrollTop < contentList.scrollHeight - contentList.clientHeight - 50) {
+          scrollButton.classList.add("show");
+        } else {
+          // Hide the button when fully scrolled to the bottom
+          scrollButton.classList.remove("show");
+        }
+      });
+
+      // Add a click event listener to the scroll-to-bottom button
+      scrollButton.addEventListener("click", () => {
+        window.scrollToBottom();
+      });
+    });
+</script>

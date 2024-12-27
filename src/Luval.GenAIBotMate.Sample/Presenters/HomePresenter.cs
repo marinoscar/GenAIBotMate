@@ -2,6 +2,8 @@
 using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Diagnostics;
 
 namespace Luval.GenAIBotMate.Sample.Presenters
@@ -27,28 +29,32 @@ namespace Luval.GenAIBotMate.Sample.Presenters
 
         public HomePresenter(GenAIBotService service, IGenAIBotStorageService storageService)
         {
-            _service = service;
-            _storageService = storageService;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
-        public void Initialize(GenAIBotMateControl control)
+        public async Task InitializeAsync(GenAIBotMateControl control, CancellationToken cancellationToken = default)
         {
             _control = control;
             _control.SubmitClicked += SubmitClickedAsync;
             _service.ChatMessageCompleted += ChatMessageCompleted;
             _service.ChatMessageStream += ChatMessageStream;
-            if(_bot == null)
-                _bot = _storageService.GetChatbotAsync(1).Result;
+            if (_bot == null)
+                _bot = await _storageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
         }
 
         private async void SubmitClickedAsync(object? sender, ChatMessageEventArgs e)
         {
             IsLoading = true;
             IsStreaming = false;
+            var settings = new OpenAIPromptExecutionSettings()
+            {
+                Temperature = 0.7,
+            };
             if (_lastMessage == null)
-                _lastMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, temperature:0.7);
+                _lastMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, settings: settings);
             else
-                _lastMessage = await _service.AppendMessageToSession(e.UserMessage, _lastMessage.ChatSessionId, temperature: 0.7);
+                _lastMessage = await _service.AppendMessageToSession(e.UserMessage, _lastMessage.ChatSessionId, settings: settings);
 
             IsLoading = false;
             IsStreaming = false;

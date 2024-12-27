@@ -1,6 +1,7 @@
 ﻿using Luval.GenAIBotMate.Core.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,9 @@ namespace Luval.GenAIBotMate.Components
 
         private string userMessage = "";
         private string agentStreamMessage = "";
+
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
 
         [Parameter]
         public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
@@ -49,6 +53,11 @@ namespace Luval.GenAIBotMate.Components
             Debug.WriteLine("Message Count: {0}", Messages.Count);
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
+            await base.OnAfterRenderAsync(firstRender);
+        }
     }
 
     public class ChatMessageEventArgs : EventArgs
