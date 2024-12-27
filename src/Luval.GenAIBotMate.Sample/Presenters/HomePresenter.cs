@@ -15,8 +15,9 @@ namespace Luval.GenAIBotMate.Sample.Presenters
         private readonly GenAIBotService _service;
         private readonly IGenAIBotStorageService _storageService;
         private GenAIBotMateControl _control;
-        private ChatMessage _lastMessage = default!;
+        private ChatMessage _streamMessage = default!;
         private GenAIBot _bot = default!;
+        private ulong? activeSessionId;
 
         public event EventHandler UpdateState;
 
@@ -28,7 +29,7 @@ namespace Luval.GenAIBotMate.Sample.Presenters
 
         public bool IsLoading { get; set; } = false;
 
-        public string ChatTitle { get { return _lastMessage == null ? "New Chat" : _lastMessage.ChatSession?.Title ?? "New Chat"; } }
+        public string ChatTitle { get { return _streamMessage == null ? "New Chat" : _streamMessage.ChatSession?.Title ?? "New Chat"; } }
 
         public HomePresenter(GenAIBotService service, IGenAIBotStorageService storageService)
         {
@@ -54,16 +55,30 @@ namespace Luval.GenAIBotMate.Sample.Presenters
             {
                 Temperature = 0.7,
             };
-            if (_lastMessage == null)
-                _lastMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, settings: settings);
+
+            var firstMessage = _streamMessage == null;
+            //Add the inprogress message to be rendered on the screen
+            _streamMessage = new ChatMessage() { 
+                Id = 9999,
+                UserMessage = e.UserMessage,
+                AgentResponse = "Loading..."
+            };
+            Messages.Add(_streamMessage);
+            OnUpdateState(); // Update the UI to show the loading message
+
+
+            if (firstMessage)
+                _streamMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, settings: settings);
             else
-                _lastMessage = await _service.AppendMessageToSession(e.UserMessage, _lastMessage.ChatSessionId, settings: settings);
+            {
+                _streamMessage = await _service.AppendMessageToSession(e.UserMessage, activeSessionId.Value, settings: settings);
+            }
 
             IsLoading = false;
             IsStreaming = false;
-
+            activeSessionId = _streamMessage.ChatSessionId;
             Messages.Clear();
-            Messages.AddRange(_lastMessage.ChatSession.ChatMessages);
+            Messages.AddRange(_streamMessage.ChatSession.ChatMessages);
             if(Messages.Count == 1)
             {
                 await UpdateSessionTitleBasedOnHistoryAsync();
@@ -78,8 +93,8 @@ namespace Luval.GenAIBotMate.Sample.Presenters
 
         public async Task UpdateSessionTitleAsync(string title)
         {
-            _lastMessage.ChatSession.Title = title;
-            await _storageService.UpdateChatSessionAsync(_lastMessage.ChatSession);
+            _streamMessage.ChatSession.Title = title;
+            await _storageService.UpdateChatSessionAsync(_streamMessage.ChatSession);
         }
 
         private async Task<string> GetChatTitleAsync(CancellationToken cancellationToken = default)
@@ -95,7 +110,7 @@ Here is the conversation:
 
 ";
             var body = new StringBuilder();
-            foreach (var msg in _lastMessage.ChatSession.ChatMessages)
+            foreach (var msg in _streamMessage.ChatSession.ChatMessages)
             {
                 body.AppendFormat("User Message: {0}\n\nAgent Response: {1}\n", msg.UserMessage,msg.AgentResponse);
             }
@@ -110,13 +125,19 @@ Here is the conversation:
         }
         private void ChatMessageCompleted(object? sender, ChatMessageCompletedEventArgs e)
         {
+            IsLoading = false;
+            IsStreaming = false;
         }
 
         private void ChatMessageStream(object? sender, ChatMessageStreamEventArgs e)
         {
             IsLoading = false;
             IsStreaming = true;
-            OnUpdateState();
+            if (_streamMessage != null)
+            {
+                _streamMessage.AgentResponse += e.Content; //append the message from the AI
+                OnUpdateState();
+            }
         }
 
         protected virtual void OnUpdateState()
