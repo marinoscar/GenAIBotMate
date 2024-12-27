@@ -1,5 +1,25 @@
-﻿<h1>GenAIBotMateControl</h1>
+﻿
+<style>
+</style>
 
-@code {
-
-}
+<div>
+    <FluentLayout>
+        <FluentHeader>
+            <FluentButton IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.SettingsChat())"></FluentButton>
+            <FluentSpacer />
+            Blazor Chat
+            <FluentSpacer />
+            <FluentAnchor Href="/swagger" Target="_blank">API</FluentAnchor>
+        </FluentHeader>
+        <ChatMessageContent />
+        <FluentSpacer />
+        <FluentCard Style="border: 1px solid var(--accent-fill-rest);">
+            <FluentStack Orientation="Orientation.Horizontal">
+                <textarea placeholder="Ask me anything..." Style="width:100%;border: none;background: none;color: var(--neutral-foreground-rest);outline: none;"></textarea>
+                <FluentButton Appearance="Appearance.Accent"
+                              IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
+                              Style="margin-top:6px;"></FluentButton>
+            </FluentStack>
+        </FluentCard>
+    </FluentLayout>
+</div>
