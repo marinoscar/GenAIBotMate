@@ -16,6 +16,10 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Luval.GenAIBotMate\Luval.GenAIBotMate.csproj" />
+  </ItemGroup>
+
 
 
 </Project>
