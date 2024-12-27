@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Markdig;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,10 @@ namespace Luval.GenAIBotMate.Components
 
         [Parameter]
         public string UserMessage { get; set; } = "";
+
+        public MarkupString GetHtmlFromMD(string md)
+        {
+            return new MarkupString(Markdown.ToHtml(md));
+        }
     }
 }

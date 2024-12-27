@@ -32,6 +32,9 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public bool IsStreaming { get; set; } = false;
 
+        [Parameter]
+        public string ChatTitle { get; set; } = "New Chat";
+
 
 
         public event EventHandler<ChatMessageEventArgs>? SubmitClicked;

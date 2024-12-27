@@ -48,7 +48,7 @@ namespace Luval.GenAIBotMate.Core.Entities
         /// </summary>
         [Required(ErrorMessage = "Title is required.")]
         [MinLength(3, ErrorMessage = "Title must be at least 3 characters long.")]
-        [MaxLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]
+        [MaxLength(150, ErrorMessage = "Title cannot exceed 100 characters.")]
         [Column("Title")]
         public string Title { get; set; }
 
