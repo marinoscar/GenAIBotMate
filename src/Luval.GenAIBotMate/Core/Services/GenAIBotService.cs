@@ -329,6 +329,7 @@ namespace Luval.GenAIBotMate.Core.Services
 
     public class ChatMessageCompletedEventArgs : EventArgs
     {
+
         /// <summary>
         /// The content of the chat message.
         /// </summary>
@@ -371,11 +372,21 @@ namespace Luval.GenAIBotMate.Core.Services
             };
 
             if (content.Metadata == null) return res;
-            var usage = JsonObject.Parse(content.Metadata["Usage"].ToString());
-            if (usage != null)
+            if (content.Metadata.ContainsKey("Usage") && content.Metadata["Usage"] is OpenAI.Chat.ChatTokenUsage)
             {
-                res.InputTokenCount = usage["InputTokenCount"]?.GetValue<int>() ?? 0;
-                res.OutputTokenCount = usage["OutputTokenCount"]?.GetValue<int>() ?? 0;
+                var usage = content.Metadata["Usage"] as OpenAI.Chat.ChatTokenUsage;
+
+                res.InputTokenCount = usage.InputTokenCount;
+                res.OutputTokenCount = usage.OutputTokenCount;
+            }
+            else
+            {
+                var usage = JsonObject.Parse(content.Metadata["Usage"].ToString());
+                if (usage != null)
+                {
+                    res.InputTokenCount = usage["InputTokenCount"]?.GetValue<int>() ?? 0;
+                    res.OutputTokenCount = usage["OutputTokenCount"]?.GetValue<int>() ?? 0;
+                }
             }
             return res;
         }

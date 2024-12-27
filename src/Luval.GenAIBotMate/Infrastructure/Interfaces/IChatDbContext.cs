@@ -1,5 +1,6 @@
 ﻿using Luval.GenAIBotMate.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Luval.GenAIBotMate.Infrastructure.Interfaces
@@ -33,6 +34,11 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// The database instance for the context.
         /// </summary>
         public DatabaseFacade Database { get; }
+
+        /// <summary>
+        /// The ChangeTracker for the context.
+        /// </summary>
+        public ChangeTracker ChangeTracker { get; }
 
         /// <summary>
         /// Saves the changes made to the context.

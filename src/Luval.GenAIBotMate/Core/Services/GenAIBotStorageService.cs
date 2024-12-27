@@ -13,7 +13,7 @@ namespace Luval.GenAIBotMate.Core.Services
     /// </summary>
     public class GenAIBotStorageService : IGenAIBotStorageService
     {
-        private readonly ChatDbContext _dbContext;
+        private readonly IChatDbContext _dbContext;
         private readonly ILogger<GenAIBotStorageService> _logger;
         private readonly IUserResolver _userResolver;
 
@@ -23,7 +23,7 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <param name="dbContext">The database context.</param>
         /// <param name="logger">The logger instance.</param>
         /// <param name="userResolver">The user resolver instance.</param>
-        public GenAIBotStorageService(ChatDbContext dbContext, ILogger<GenAIBotStorageService> logger, IUserResolver userResolver)
+        public GenAIBotStorageService(IChatDbContext dbContext, ILogger<GenAIBotStorageService> logger, IUserResolver userResolver)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -78,7 +78,7 @@ namespace Luval.GenAIBotMate.Core.Services
         {
             return await _dbContext.GenAIBots
                 .Include(x => x.ChatSessions)
-                .SingleOrDefaultAsync(x => x.Id == chatbotId, cancellationToken);
+                .SingleOrDefaultAsync(x => x.Id == chatbotId, cancellationToken).ConfigureAwait(false);
         }
 
 

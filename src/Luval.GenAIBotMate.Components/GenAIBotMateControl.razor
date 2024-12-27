@@ -1,28 +1,33 @@
-﻿
+﻿@using System.Diagnostics
+
 <style>
-    .chat-input{
-        width: 100%;
-        border: none;
-        background: none;
-        color: var(--neutral-foreground-rest);
-        outline: none;
+
+    .chat-card {
+    border: 1px solid var(--accent-fill-rest);
+    }
+
+    .chat-input {
+    width: 100%;
+    border: none;
+    background: none;
+    color: var(--neutral-foreground-rest);
+    outline: none;
     }
 
     /* Input area fixed at the bottom of the viewport, matching the width of the content */
     .chat-box {
-        position: fixed; /* Fixes the textarea at the bottom of the screen */
-        bottom: 0; /* Positions it at the bottom of the viewport */
-        width: calc(100% - 300px); /* Matches the remaining width of the content area */
-        box-sizing: border-box; /* Ensures padding and border are included in width/height */
-        padding-bottom: 50px;
+    position: fixed; /* Fixes the textarea at the bottom of the screen */
+    bottom: 0; /* Positions it at the bottom of the viewport */
+    width: calc(100% - 300px); /* Matches the remaining width of the content area */
+    box-sizing: border-box; /* Ensures padding and border are included in width/height */
+    padding-bottom: 50px;
     }
 
     @@media(max-width: 768px) {
-        .chat-box {
-            width: calc(100% - 50px); /* Adjusts width for smaller screens */
-        }
+    .chat-box {
+    width: calc(100% - 50px); /* Adjusts width for smaller screens */
     }
-
+    }
 
 </style>
 <script>
@@ -38,15 +43,42 @@
             <FluentSpacer />
             <FluentAnchor Href="/swagger" Target="_blank">API</FluentAnchor>
         </FluentHeader>
-        <ChatMessageContent />
+        @if (IsLoading)
+        {
+            <FluentProgressRing style="width: 82px; height: 82px; position:absolute; top:0px; left:0px;"></FluentProgressRing>
+        }
+        else
+        {
+            @if (this.Messages != null && this.Messages.Any())
+            {
+                Debug.WriteLine(string.Join(";", this.Messages.Select(i => i.AgentResponse)));
+                @foreach (var msg in this.Messages)
+                {
+                    <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
+                }
+            }
+            else
+            {
+                @if (!IsStreaming){
+                    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;width:95%">
+                        <h1>@InitialMessage</h1>
+                    </div>
+                }
+            }
+            @if (IsStreaming)
+            {
+                <ChatMessageContent UserMessage="@userMessage" AgentResponse="@agentStreamMessage" />
+            }
+        }
         <FluentSpacer />
         <div class="chat-box">
-            <FluentCard Style="border: 1px solid var(--accent-fill-rest);">
+            <FluentCard Class="chat-card">
                 <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
-                    <textarea placeholder="Ask me anything..." class="chat-input"></textarea>
+                    <textarea placeholder="Ask me anything..." class="chat-input" @bind="userMessage"></textarea>
                     <FluentButton Appearance="Appearance.Accent"
                                   IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
-                                  Style="margin-top:6px;"></FluentButton>
+                                  Style="margin-top:6px;"
+                                  OnClick="OnSubmitClicked" />
                 </FluentStack>
             </FluentCard>
         </div>

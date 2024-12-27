@@ -1,8 +1,43 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+
+@using Luval.GenAIBotMate.Core.Services
+@using Luval.GenAIBotMate.Infrastructure.Interfaces
 @using Luval.GenAIBotMate.Components
+@using Luval.GenAIBotMate.Sample.Presenters
+@inject GenAIBotService service;
+@inject IGenAIBotStorageService storageService;
 
 <PageTitle>Home</PageTitle>
 
-<GenAIBotMateControl>
+<GenAIBotMateControl @ref="Control" 
+    IsLoading="@homePresenter.IsLoading"
+    IsStreaming="@homePresenter.IsStreaming"
+    Messages="@homePresenter.Messages">
 
 </GenAIBotMateControl>
+
+@code {
+    private GenAIBotMateControl Control { get; set; }
+    private HomePresenter homePresenter;
+
+    protected override void OnInitialized()
+    {
+        homePresenter = new HomePresenter(service, storageService);
+        homePresenter.UpdateState += UpdateState;
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender){
+            homePresenter.Initialize(Control);
+        }
+    }
+
+    private void UpdateState(object sender, EventArgs e)
+    {
+        StateHasChanged();
+    }
+
+}

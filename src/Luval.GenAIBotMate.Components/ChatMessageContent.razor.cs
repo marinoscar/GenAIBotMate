@@ -9,5 +9,10 @@ namespace Luval.GenAIBotMate.Components
 {
     public partial class ChatMessageContent : ComponentBase
     {
+        [Parameter]
+        public string AgentResponse { get; set; } = "";
+
+        [Parameter]
+        public string UserMessage { get; set; } = "";
     }
 }

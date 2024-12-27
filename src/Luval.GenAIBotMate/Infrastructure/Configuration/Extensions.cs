@@ -29,6 +29,8 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         {
             s.AddHttpContextAccessor();
             s.AddScoped<IUserResolver, WebUserResolver>();
+            s.AddScoped<IGenAIBotStorageService, GenAIBotStorageService>();
+            s.AddScoped<GenAIBotService>();
             return s;
         }
 
