@@ -91,13 +91,22 @@
         </div>
         <div class="chat-box">
             <FluentCard Class="chat-card">
-                <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
-                    <textarea placeholder="Ask me anything..." class="chat-input" @bind="userMessage"></textarea>
-                    <FluentButton Appearance="Appearance.Accent"
-                                  IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
-                                  Style="margin-top:6px;"
-                                  OnClick="OnSubmitClicked"
-                                  Disabled="@IsLoading" />
+                <FluentStack Orientation="Orientation.Vertical">
+                    <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
+                        <textarea placeholder="Ask me anything..." class="chat-input" @bind="userMessage"></textarea>
+                        <FluentButton Appearance="Appearance.Accent"
+                                      IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
+                                      Style="margin-top:6px;"
+                                      OnClick="OnSubmitClicked"
+                                      Disabled="@IsLoading" />
+                    </FluentStack>
+                    <FluentStack Orientation="Orientation.Horizontal">
+                        <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Attach())"
+                                      Title="Attach"/>
+                        <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Settings())"
+                                      Title="Settings" />
+                        <FluentSpacer />
+                    </FluentStack>
                 </FluentStack>
             </FluentCard>
         </div>
