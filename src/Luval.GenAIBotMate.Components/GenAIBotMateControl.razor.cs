@@ -184,6 +184,21 @@ namespace Luval.GenAIBotMate.Components
             await InvokeAsync(StateHasChanged);
         }
 
+        /// <summary>
+        /// Starts a new chat session by clearing the current user message, resetting the active session ID, and clearing the message list.
+        /// </summary>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        protected virtual async Task StartNewChatAsync()
+        {
+            _userMessage = "";
+            _activeSessionId = 0;
+            StreamedMessage = default!;
+            ChatTitle = "New Chat";
+            Messages.Clear();
+            await InvokeAsync(StateHasChanged);
+        }
+
 
         /// <summary>
         /// Displays the chat history in a side panel.
