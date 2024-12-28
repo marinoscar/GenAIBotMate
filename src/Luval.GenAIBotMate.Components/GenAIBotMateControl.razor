@@ -1,53 +1,54 @@
 ﻿<style>
 
     .chat-card {
-    border: 1px solid var(--accent-fill-rest);
+        border: 1px solid var(--accent-fill-rest);
     }
 
     .chat-input {
-    width: 100%;
-    border: none;
-    background: none;
-    color: var(--neutral-foreground-rest);
-    outline: none;
+        width: 100%;
+        border: none;
+        background: none;
+        color: var(--neutral-foreground-rest);
+        outline: none;
     }
 
     /* Input area fixed at the bottom of the viewport, matching the width of the content */
     .chat-box {
-    position: fixed; /* Fixes the textarea at the bottom of the screen */
-    bottom: 0; /* Positions it at the bottom of the viewport */
-    width: calc(100% - 300px); /* Matches the remaining width of the content area */
-    box-sizing: border-box; /* Ensures padding and border are included in width/height */
-    padding-bottom: 50px;
+        position: fixed; /* Fixes the textarea at the bottom of the screen */
+        bottom: 0; /* Positions it at the bottom of the viewport */
+        left: 50%; /* Centers horizontally in the viewport */
+        transform: translate(-50%, -50%); /* Adjusts position to the exact center */
+        width: calc(100% - 300px); /* Matches the remaining width of the content area */
+        box-sizing: border-box; /* Ensures padding and border are included in width/height */
     }
 
     @@media(max-width: 768px) {
-    .chat-box {
-    width: calc(100% - 50px); /* Adjusts width for smaller screens */
-    }
+        .chat-box {
+            width: calc(100% - 50px); /* Adjusts width for smaller screens */
+        }
     }
 
     /* Scroll-to-bottom button */
     .scroll-button {
-    position: fixed; /* Fixes the button relative to the viewport */
-    left: calc(50% + 100px); /* Centers the button horizontally within the content area */
-    transform: translateX(-50%); /* Adjusts for exact centering */
-    background-color: #007bff; /* Button background color */
-    color: white; /* Button text color */
-    border: none; /* Removes the default border */
-    border-radius: 50%; /* Makes the button circular */
-    width: 40px; /* Fixed width for the button */
-    height: 40px; /* Fixed height for the button */
-    display: none; /* Initially hides the button */
-    justify-content: center; /* Centers the content inside the button */
-    align-items: center; /* Centers the content inside the button */
-    cursor: pointer; /* Changes the cursor to a pointer on hover */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+        position: fixed; /* Fixes the button relative to the viewport */
+        left: calc(50% + 100px); /* Centers the button horizontally within the content area */
+        transform: translateX(-50%); /* Adjusts for exact centering */
+        background-color: #007bff; /* Button background color */
+        color: white; /* Button text color */
+        border: none; /* Removes the default border */
+        border-radius: 50%; /* Makes the button circular */
+        width: 40px; /* Fixed width for the button */
+        height: 40px; /* Fixed height for the button */
+        display: none; /* Initially hides the button */
+        justify-content: center; /* Centers the content inside the button */
+        align-items: center; /* Centers the content inside the button */
+        cursor: pointer; /* Changes the cursor to a pointer on hover */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
     }
 
-    .scroll-button.show {
-    display: flex; /* Shows the button when necessary */
-    }
+        .scroll-button.show {
+            display: flex; /* Shows the button when necessary */
+        }
 
 </style>
 
@@ -76,7 +77,8 @@
                 {
                     @foreach (var msg in this.Messages)
                     {
-                        @if (!IsStreaming){
+                        @if (!IsStreaming)
+                        {
                             <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
                         }
                         else
@@ -87,7 +89,7 @@
                 }
                 else
                 {
-                    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;width:95%">
+                    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;width:95%; text-align:center">
                         <h1>@InitialMessage</h1>
                     </div>
                 }
@@ -107,7 +109,7 @@
                     </FluentStack>
                     <FluentStack Orientation="Orientation.Horizontal">
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Attach())"
-                                      Title="Attach"/>
+                                      Title="Attach" />
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Settings())"
                                       Title="Settings" />
                         <FluentSpacer />
