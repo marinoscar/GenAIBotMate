@@ -27,6 +27,15 @@
         padding: 0.3rem;
     }
 
+    .hidden-div {
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease; /* Smooth transition */
+    }
+
+        .hidden-div:hover {
+            opacity: 1; /* Fully visible on hover */
+        }
+
 </style>
 
 
@@ -51,6 +60,13 @@
             <span>
                 @GetHtmlFromMD(AgentResponse)
             </span>
+        </div>
+        <div class="hidden-div">
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentButton 
+                    Appearance="Appearance.Stealth"
+                              IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Copy())" />
+            </FluentStack>
         </div>
     </FluentStack>
 </FluentCard>
