@@ -5,45 +5,14 @@
 @using Luval.GenAIBotMate.Infrastructure.Interfaces
 @using Luval.GenAIBotMate.Components
 @using Luval.GenAIBotMate.Sample.Presenters
-@inject GenAIBotService service;
-@inject IGenAIBotStorageService storageService;
 
 <PageTitle>Home</PageTitle>
 
 <GenAIBotMateControl @ref="Control" 
-Messages="@homePresenter.Messages"
-ChatTitle="@homePresenter.ChatTitle">
+ChatTitle="New Chat">
 
 </GenAIBotMateControl>
 
 @code {
     private GenAIBotMateControl Control { get; set; }
-    private HomePresenter homePresenter;
-
-    protected override void OnInitialized()
-    {
-        homePresenter = new HomePresenter(service, storageService);
-        homePresenter.UpdateState += UpdateState;
-
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await homePresenter.InitializeAsync(Control);
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    protected override Task OnInitializedAsync()
-    {
-        return base.OnInitializedAsync();
-    }
-
-    private void UpdateState()
-    {
-        InvokeAsync(() => base.StateHasChanged());
-    }
-
 }
