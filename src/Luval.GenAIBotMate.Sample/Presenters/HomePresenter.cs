@@ -47,7 +47,7 @@ namespace Luval.GenAIBotMate.Sample.Presenters
                 _bot = await _storageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
         }
 
-        private async void SubmitClickedAsync(object? sender, ChatMessageEventArgs e)
+        private async Task SubmitClickedAsync(ChatMessageResult e)
         {
             IsLoading = true;
             IsStreaming = false;
@@ -68,7 +68,7 @@ namespace Luval.GenAIBotMate.Sample.Presenters
 
 
             if (firstMessage)
-                _streamMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, settings: settings);
+                _streamMessage = await _service.SubmitMessageToNewSession(_bot.Id, e.UserMessage, settings: settings).ConfigureAwait(false);
             else
             {
                 _streamMessage = await _service.AppendMessageToSession(e.UserMessage, activeSessionId.Value, settings: settings);
@@ -123,7 +123,7 @@ Here is the conversation:
             var content = res.Items.Where(i => i is TextContent).Select(i => i as TextContent).ToList();
             return string.Join(Environment.NewLine, content);
         }
-        private void ChatMessageCompleted(object? sender, ChatMessageCompletedEventArgs e)
+        private void ChatMessageCompleted(object? sender, ChatMessageCompletedResult e)
         {
             IsLoading = false;
             IsStreaming = false;
@@ -134,7 +134,7 @@ Here is the conversation:
             }
         }
 
-        private void ChatMessageStream(object? sender, ChatMessageStreamEventArgs e)
+        private void ChatMessageStream(object? sender, ChatMessageStreamResult e)
         {
             IsLoading = false;
             IsStreaming = true;

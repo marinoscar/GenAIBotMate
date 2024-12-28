@@ -35,9 +35,9 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public string ChatTitle { get; set; } = "New Chat";
 
+        [Parameter]
+        public required Func<ChatMessageResult, Task> SubmitClicked { get; set; }
 
-
-        public event EventHandler<ChatMessageEventArgs>? SubmitClicked;
 
         public virtual void AddAgentText(string text)
         {
@@ -45,13 +45,15 @@ namespace Luval.GenAIBotMate.Components
             StateHasChanged();
         }
 
-        protected virtual void OnSubmitClicked()
+        protected virtual async Task OnSubmitClickedAsync()
         {
-            SubmitClicked?.Invoke(this, new ChatMessageEventArgs()
+
+            await SubmitClicked?.Invoke(new ChatMessageResult()
             {
                 UserMessage = userMessage,
                 History = Messages
             });
+
             StateHasChanged();
             Debug.WriteLine("Message Count: {0}", Messages.Count);
         }
@@ -64,7 +66,7 @@ namespace Luval.GenAIBotMate.Components
         }
     }
 
-    public class ChatMessageEventArgs : EventArgs
+    public class ChatMessageResult : EventArgs
     {
         public string? UserMessage { get; set; }
         public List<ChatMessage>? History { get; set; }

@@ -24,13 +24,15 @@ namespace Luval.GenAIBotMate.Core.Services
         private readonly IMediaService _mediaService;
 
         /// <summary>
-        /// Occurs when a chat message is completed.
+        /// Invoked when a chat message is completed.
         /// </summary>
-        public event EventHandler<ChatMessageCompletedEventArgs>? ChatMessageCompleted;
+        public event Func<ChatMessageCompletedResult, Task>? ChatMessageCompleted;
+        
         /// <summary>
-        /// Occurs when a chat message is streamed.
+        /// Invoked when a chat message is streamed.
         /// </summary>
-        public event EventHandler<ChatMessageStreamEventArgs>? ChatMessageStream;
+
+        public Func<ChatMessageStreamResult, Task>? ChatMessageStream;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenAIBotService"/> class.
@@ -262,7 +264,7 @@ namespace Luval.GenAIBotMate.Core.Services
         protected virtual void OnMessageStream(StreamingChatMessageContent? streamingChat)
         {
             if (streamingChat == null) return;
-            ChatMessageStream?.Invoke(this, new ChatMessageStreamEventArgs(streamingChat.Content));
+            ChatMessageStream?.Invoke(new ChatMessageStreamResult() { Content = streamingChat.Content });
         }
 
         /// <summary>
@@ -274,7 +276,7 @@ namespace Luval.GenAIBotMate.Core.Services
         protected virtual void OnMessageCompleted(StreamingChatMessageContent? streamingChat, string? content, string? finishReason)
         {
             if (streamingChat == null) return;
-            ChatMessageCompleted?.Invoke(this, ChatMessageCompletedEventArgs.Create(streamingChat, content, finishReason));
+            ChatMessageCompleted?.Invoke(ChatMessageCompletedResult.Create(streamingChat, content, finishReason));
         }
 
         #region Supporting Methods
@@ -282,7 +284,7 @@ namespace Luval.GenAIBotMate.Core.Services
         private async Task<ChatMessage> PersistMessage(string message, ChatSession chatSession, ChatHistoryPrep prepHistory, StreamingChatMessageContent? content, StringBuilder sb, CancellationToken cancellationToken = default)
         {
             //updates the chat session with the new message
-            var chatInfo = ChatMessageCompletedEventArgs.Create(content, string.Empty, string.Empty);
+            var chatInfo = ChatMessageCompletedResult.Create(content, string.Empty, string.Empty);
             List<ChatMessageMedia>? mediaFiles = null;
             var chatMessage = new ChatMessage()
             {
@@ -374,7 +376,10 @@ namespace Luval.GenAIBotMate.Core.Services
 
     }
 
-    public class ChatMessageCompletedEventArgs : EventArgs
+    /// <summary>
+    /// Represents the result of a chat message completion.
+    /// </summary>
+    public class ChatMessageCompletedResult 
     {
 
         /// <summary>
@@ -403,15 +408,15 @@ namespace Luval.GenAIBotMate.Core.Services
         public int TotalTokenCount => OutputTokenCount + InputTokenCount;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ChatMessageCompletedEventArgs"/> class.
+        /// Creates a new instance of the <see cref="ChatMessageCompletedResult"/> class.
         /// </summary>
         /// <param name="content">The <see cref="StreamingChatMessageContent"/></param>
         /// <param name="contentResult">A string with all of the chat response</param>
         /// <param name="finishReason">The reason the streaming ended</param>
         /// <returns></returns>
-        public static ChatMessageCompletedEventArgs Create(StreamingChatMessageContent content, string? contentResult, string? finishReason)
+        public static ChatMessageCompletedResult Create(StreamingChatMessageContent content, string? contentResult, string? finishReason)
         {
-            var res = new ChatMessageCompletedEventArgs()
+            var res = new ChatMessageCompletedResult()
             {
                 FinishReason = finishReason ?? default!,
                 Content = contentResult ?? default!,
@@ -439,16 +444,15 @@ namespace Luval.GenAIBotMate.Core.Services
         }
     }
 
-    public class ChatMessageStreamEventArgs : EventArgs
+    /// <summary>
+    /// Represents the result of a chat message stream.
+    /// </summary>
+    public record ChatMessageStreamResult
     {
         /// <summary>
         /// The content of the chat message.
         /// </summary>
         public string? Content { get; set; }
 
-        public ChatMessageStreamEventArgs(string? content)
-        {
-            Content = content;
-        }
     }
 }

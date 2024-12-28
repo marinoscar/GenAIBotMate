@@ -55,8 +55,8 @@ namespace Luval.GenAIBotMate.Core.Services
                 chatbot.UtcUpdatedOn = DateTime.UtcNow;
                 chatbot.Version = 1;
 
-                await _dbContext.GenAIBots.AddAsync(chatbot, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.GenAIBots.AddAsync(chatbot, cancellationToken).ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chatbot created successfully with ID {ChatbotId}.", chatbot.Id);
                 return chatbot;
             }
@@ -106,7 +106,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 if (!isTracked)
                     _dbContext.GenAIBots.Update(chatbot);
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chatbot updated successfully with ID {ChatbotId}.", chatbot.Id);
                 return chatbot;
             }
@@ -125,7 +125,7 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         public async Task DeleteChatbotAsync(ulong chatbotId, CancellationToken cancellationToken = default)
         {
-            var chatbot = await GetChatbotAsync(chatbotId, cancellationToken);
+            var chatbot = await GetChatbotAsync(chatbotId, cancellationToken).ConfigureAwait(false);
             if (chatbot == null)
             {
                 var errorMsg = string.Format("Chatbot with ID {0} not found.", chatbotId);
@@ -135,7 +135,7 @@ namespace Luval.GenAIBotMate.Core.Services
             try
             {
                 _dbContext.GenAIBots.Remove(chatbot);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chatbot with ID {ChatbotId} deleted successfully.", chatbotId);
             }
             catch (Exception ex)
@@ -178,8 +178,8 @@ namespace Luval.GenAIBotMate.Core.Services
                 chatSession.UtcUpdatedOn = DateTime.UtcNow.ForceUtc();
                 chatSession.Version = 1;
 
-                await _dbContext.ChatSessions.AddAsync(chatSession, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.ChatSessions.AddAsync(chatSession, cancellationToken).ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chat session created successfully with ID {0}.", chatSession.Id);
                 return chatSession;
             }
@@ -214,7 +214,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 if (!isTracked)
                     _dbContext.ChatSessions.Update(chatSession);
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chat session updated successfully with ID {0}.", chatSession.Id);
                 return chatSession;
             }
@@ -233,7 +233,7 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         public async Task DeleteChatSessionAsync(ulong chatSessionId, CancellationToken cancellationToken = default)
         {
-            var chatSession = await GetChatSessionAsync(chatSessionId, cancellationToken);
+            var chatSession = await GetChatSessionAsync(chatSessionId, cancellationToken).ConfigureAwait(false);
             if (chatSession == null)
             {
                 var errorMsg = string.Format("Chat session with ID {0} not found.", chatSessionId);
@@ -243,7 +243,7 @@ namespace Luval.GenAIBotMate.Core.Services
             try
             {
                 _dbContext.ChatSessions.Remove(chatSession);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chat session with ID {ChatSessionId} deleted successfully.", chatSessionId);
             }
             catch (Exception ex)
@@ -267,7 +267,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 .ThenInclude(c => c.ChatSessions)
                 .Include(x => x.ChatMessages)
                 .ThenInclude(m => m.Media)
-                .SingleOrDefaultAsync(x => x.Id == chatSessionId, cancellationToken);
+                .SingleOrDefaultAsync(x => x.Id == chatSessionId, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
@@ -320,8 +320,8 @@ namespace Luval.GenAIBotMate.Core.Services
                 chatMessage.Version = 1;
 
                 chatMessage.ChatSessionId = chatSessionId;
-                await _dbContext.ChatMessages.AddAsync(chatMessage, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.ChatMessages.AddAsync(chatMessage, cancellationToken).ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chat message created successfully with ID {0}.", chatMessage.Id);
 
                 // Add child media
@@ -335,10 +335,10 @@ namespace Luval.GenAIBotMate.Core.Services
                         m.CreatedBy = _userResolver.GetUserEmail();
                         m.UtcCreatedOn = DateTime.UtcNow.ForceUtc();
                         m.Version = 1;
-                        await AddMessageMediaAsync(chatMessage.Id, m, cancellationToken);
+                        await AddMessageMediaAsync(chatMessage.Id, m, cancellationToken).ConfigureAwait(false);
                     }
                     chatMessage.ChatSession.HasMedia = true; // updates the fact that the session has media
-                    await _dbContext.SaveChangesAsync(cancellationToken);
+                    await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
                 return chatMessage;
             }
@@ -379,8 +379,8 @@ namespace Luval.GenAIBotMate.Core.Services
                 media.CreatedBy = _userResolver.GetUserEmail();
                 media.Version = 1;
                 media.ChatMessageId = chatMessageId;
-                await _dbContext.ChatMessageMedia.AddAsync(media, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.ChatMessageMedia.AddAsync(media, cancellationToken).ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogInformation("Chat message media created successfully with ID {0}.", media.Id);
                 return media;
             }

@@ -63,7 +63,12 @@
         <div id="content-list">
             @if (IsLoading)
             {
-                <FluentProgressRing style="width: 82px; height: 82px; position:absolute; top:0px; left:0px;"></FluentProgressRing>
+                <FluentOverlay Opacity="0.4"
+                               BackgroundColor="var(--neutral-layer-4)"
+                               FullScreen="true"
+                               PreventScroll=true>
+                    <FluentProgressRing />
+                </FluentOverlay>
             }
             else
             {
@@ -97,7 +102,7 @@
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
                                       Style="margin-top:6px;"
-                                      OnClick="OnSubmitClicked"
+                                      OnClick="OnSubmitClickedAsync"
                                       Disabled="@IsLoading" />
                     </FluentStack>
                     <FluentStack Orientation="Orientation.Horizontal">
