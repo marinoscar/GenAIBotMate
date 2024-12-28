@@ -1,15 +1,19 @@
-﻿using Luval.GenAIBotMate.Core.Entities;
+﻿using Luval.GenAIBotMate.Components.Infrastructure.Configuration;
+using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Luval.GenAIBotMate.Components
@@ -44,51 +48,138 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public string? GenAIChatbotName { get; set; }
 
+        [Parameter]
+        public GenAIBotOptions Options { get; set; } = new GenAIBotOptions();
+
         [Inject]
-        public required GenAIBotService Service {get;set;}
+        public required GenAIBotService Service { get; set; }
 
         [Inject]
         public required IGenAIBotStorageService StorageService { get; set; }
 
 
-        internal GenAIBot Bot { get; private set; }
+        /// <summary>
+        /// The GenAIBot instance to be used for the chat.
+        /// </summary>
+        internal GenAIBot Bot { get; private set; } = default!;
 
-        
-        
+        /// <summary>
+        /// The ChatMessage instance to be streamed.
+        /// </summary>
+        internal ChatMessage StreamedMessage { get; private set; } = default!;
+
+
+
         protected virtual async Task OnSubmitClickedAsync()
         {
 
-            await SubmitClicked?.Invoke(new ChatMessageResult()
+            IsLoading = true;
+            IsStreaming = false;
+            var settings = new OpenAIPromptExecutionSettings()
             {
+                Temperature = Options.Temperature,
+                ModelId = Options.Model
+            };
+
+            var firstMessage = StreamedMessage == null;
+            //Add the inprogress message to be rendered on the screen
+            StreamedMessage = new ChatMessage()
+            {
+                Id = 9999,
                 UserMessage = userMessage,
-                History = Messages
-            });
+                AgentResponse = "Loading..."
+            };
+            Messages.Add(StreamedMessage);
+            StateHasChanged(); // Update the UI to show the loading message
+
+
+            if (firstMessage)
+                StreamedMessage = await Service.SubmitMessageToNewSession(Bot.Id, userMessage, settings: settings).ConfigureAwait(false);
+            else
+            {
+                StreamedMessage = await Service.AppendMessageToSession(userMessage, StreamedMessage.ChatSessionId, settings: settings);
+            }
+
+            IsLoading = false;
+            IsStreaming = false;
+
+            Messages.Clear();
+            Messages.AddRange(StreamedMessage.ChatSession.ChatMessages);
+            if (Messages.Count == 1)
+            {
+                await UpdateSessionTitleBasedOnHistoryAsync();
+            }
 
             StateHasChanged();
             Debug.WriteLine("Message Count: {0}", Messages.Count);
+        }
+
+        protected override  async Task OnInitializedAsync()
+        {
+            Service.ChatMessageCompleted += ChatMessageCompletedAsync;
+            Service.ChatMessageStream += ChatMessageStreamAsync;
+
+            Bot = await GetBotAsync(CancellationToken.None);
+            if (Bot == null)
+            {
+                throw new InvalidOperationException($"There are no instance of {nameof(GenAIBot)} in the {nameof(IGenAIBotStorageService)} and it is required");
+            }
+            await base.OnInitializedAsync();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
                 await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
-            await base.OnAfterRenderAsync(firstRender);
         }
 
 
-        protected virtual async Task InitializeControlAsync(CancellationToken cancellationToken = default)
+
+        public async Task UpdateSessionTitleBasedOnHistoryAsync()
         {
-            Service.ChatMessageCompleted += ChatMessageCompletedAsync;
-            Service.ChatMessageStream += ChatMessageStreamAsync;
-            if (Bot == null)
+            await UpdateSessionTitleAsync(await GetChatTitleAsync());
+        }
+
+        public async Task UpdateSessionTitleAsync(string title)
+        {
+            StreamedMessage.ChatSession.Title = title;
+            await StorageService.UpdateChatSessionAsync(StreamedMessage.ChatSession);
+        }
+
+        private async Task<string> GetChatTitleAsync(CancellationToken cancellationToken = default)
+        {
+            var prompt = @"
+From the following conversation, please extract a title for the chat.
+Here is the conversation:
+
+{body}
+
+- Keep the title to less than 80 characters 
+- Just return the title on a single line and nothing else.
+
+";
+            var body = new StringBuilder();
+            foreach (var msg in StreamedMessage.ChatSession.ChatMessages)
             {
-                Bot = await StorageService.GetChatbotAsync(GenAIChatbotName, cancellationToken).ConfigureAwait(false);
-                if(Bot == null)
-                {
-                    Bot = await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
-                }
-                if(Bot == null) throw new InvalidOperationException($"There are no instance of {nameof(GenAIBot)} in the {nameof(IGenAIBotStorageService)} and it is required");
+                body.AppendFormat("User Message: {0}\n\nAgent Response: {1}\n", msg.UserMessage, msg.AgentResponse);
             }
+            var settings = new OpenAIPromptExecutionSettings()
+            {
+                Temperature = 0.8,
+                ModelId = "gpt-3.5-turbo"
+            };
+            var res = await Service.GetChatMessageAsync(prompt.Replace("{body}", body.ToString()), settings);
+            var content = res.Items.Where(i => i is TextContent).Select(i => i as TextContent).ToList();
+            return string.Join(Environment.NewLine, content);
+        }
+
+
+        private async Task<GenAIBot?> GetBotAsync(CancellationToken cancellationToken)
+        {
+            if (Bot != null) return Bot;
+            Debug.WriteLine("Getting bot from storage", "IMPORTANT");
+            var bot = await StorageService.GetChatbotAsync(GenAIChatbotName, cancellationToken).ConfigureAwait(false);
+            return bot ?? await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task ChatMessageStreamAsync(ChatMessageStreamResult result)
