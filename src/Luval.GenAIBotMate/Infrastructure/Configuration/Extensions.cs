@@ -9,6 +9,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,6 +86,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         {
             s.AddScoped<IChatDbContext, PostgresChatDbContext>((i) =>
             {
+                Debug.WriteLine($"Creating PostgresChatDbContext");
                 return new PostgresChatDbContext(postgresConnectionString);
             });
             return s;

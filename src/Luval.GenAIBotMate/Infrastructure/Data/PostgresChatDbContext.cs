@@ -4,6 +4,7 @@ using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             //continue with regular implementation
             base.OnConfiguring(optionsBuilder);
 
+
             //add conn string if provided
             if (!string.IsNullOrEmpty(_connectionString))
                 optionsBuilder.UseNpgsql(_connectionString);
@@ -80,5 +82,13 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
                .HasColumnType("BIGINT");
 
         }
+
+        public override ValueTask DisposeAsync()
+        {
+            Debug.WriteLine("Disposing PostgresChatDbContext", "IMPORTANT");
+            return base.DisposeAsync();
+        }
+
+
     }
 }

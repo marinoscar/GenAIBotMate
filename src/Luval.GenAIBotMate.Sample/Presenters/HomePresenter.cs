@@ -19,7 +19,7 @@ namespace Luval.GenAIBotMate.Sample.Presenters
         private GenAIBot _bot = default!;
         private ulong? activeSessionId;
 
-        public event EventHandler UpdateState;
+        public Action? UpdateState;
 
         /// <summary>
         /// Gets or sets the chat messages.
@@ -41,8 +41,8 @@ namespace Luval.GenAIBotMate.Sample.Presenters
         {
             _control = control;
             _control.SubmitClicked += SubmitClickedAsync;
-            _service.ChatMessageCompleted += ChatMessageCompleted;
-            _service.ChatMessageStream += ChatMessageStream;
+            _service.ChatMessageCompleted += ChatMessageCompletedAsync;
+            _service.ChatMessageStream += ChatMessageStreamAsync;
             if (_bot == null)
                 _bot = await _storageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
         }
@@ -123,7 +123,7 @@ Here is the conversation:
             var content = res.Items.Where(i => i is TextContent).Select(i => i as TextContent).ToList();
             return string.Join(Environment.NewLine, content);
         }
-        private void ChatMessageCompleted(object? sender, ChatMessageCompletedResult e)
+        private Task ChatMessageCompletedAsync(ChatMessageCompletedResult e)
         {
             IsLoading = false;
             IsStreaming = false;
@@ -132,9 +132,10 @@ Here is the conversation:
                 _streamMessage.AgentResponse = e.Content; //append the message from the AI
                 OnUpdateState();
             }
+            return Task.CompletedTask;
         }
 
-        private void ChatMessageStream(object? sender, ChatMessageStreamResult e)
+        private Task ChatMessageStreamAsync(ChatMessageStreamResult e)
         {
             IsLoading = false;
             IsStreaming = true;
@@ -143,11 +144,12 @@ Here is the conversation:
                 _streamMessage.AgentResponse += e.Content; //append the message from the AI
                 OnUpdateState();
             }
+            return Task.CompletedTask;
         }
 
         protected virtual void OnUpdateState()
         {
-            UpdateState?.Invoke(this, EventArgs.Empty);
+            UpdateState?.Invoke();
         }
     }
 }

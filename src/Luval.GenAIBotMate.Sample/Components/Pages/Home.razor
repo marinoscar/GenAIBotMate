@@ -38,9 +38,9 @@ ChatTitle="@homePresenter.ChatTitle">
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void UpdateState(object sender, EventArgs e)
+    private void UpdateState()
     {
-        StateHasChanged();
+        InvokeAsync(() => base.StateHasChanged());
     }
 
 }
