@@ -39,6 +39,8 @@ namespace Luval.GenAIBotMate.Components
         public required Func<ChatMessageResult, Task> SubmitClicked { get; set; }
 
 
+
+
         public virtual void AddAgentText(string text)
         {
             agentStreamMessage += text;
