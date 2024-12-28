@@ -81,7 +81,14 @@ namespace Luval.GenAIBotMate.Components
             Service.ChatMessageCompleted += ChatMessageCompletedAsync;
             Service.ChatMessageStream += ChatMessageStreamAsync;
             if (Bot == null)
-                Bot = await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
+            {
+                Bot = await StorageService.GetChatbotAsync(GenAIChatbotName, cancellationToken).ConfigureAwait(false);
+                if(Bot == null)
+                {
+                    Bot = await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
+                }
+                if(Bot == null) throw new InvalidOperationException($"There are no instance of {nameof(GenAIBot)} in the {nameof(IGenAIBotStorageService)} and it is required");
+            }
         }
 
         private async Task ChatMessageStreamAsync(ChatMessageStreamResult result)
