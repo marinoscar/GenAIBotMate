@@ -43,7 +43,9 @@ namespace Luval.GenAIBotMate.Sample
                 .AddInteractiveServerRenderMode();
 
             // Initialize the database
-            DbHelper.InitializeAsync(new PostgresChatDbContext(config.GetValue<string>("DatabaseConnectionString"))).Wait();
+            DbHelper.InitializeAsync(new SqliteChatDbContext())
+                .GetAwaiter()
+                .GetResult();
 
             app.Run();
         }
