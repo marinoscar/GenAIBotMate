@@ -100,7 +100,7 @@
             <FluentCard Class="chat-card">
                 <FluentStack Orientation="Orientation.Vertical">
                     <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
-                        <textarea placeholder="Ask me anything..." class="chat-input" @bind="userMessage"></textarea>
+                        <textarea placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
                                       Style="margin-top:6px;"

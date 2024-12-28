@@ -22,9 +22,9 @@ namespace Luval.GenAIBotMate.Components
     public partial class GenAIBotMateControl : ComponentBase
     {
 
-        private string userMessage = "";
-        private string agentStreamMessage = "";
-        private ulong chatSessionId = 0;
+        private string _userMessage = "";
+        private string _agentStreamMessage = "";
+        private ulong _activeSessionId = 0;
         private IDialogReference? _historyDialog;
 
 
@@ -118,18 +118,18 @@ namespace Luval.GenAIBotMate.Components
                 StreamedMessage = new ChatMessage()
                 {
                     Id = 9999,
-                    ChatSessionId = chatSessionId,
-                    UserMessage = userMessage
+                    ChatSessionId = _activeSessionId,
+                    UserMessage = _userMessage
                 };
                 Messages.Add(StreamedMessage);
 
                 await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
 
                 StreamedMessage = firstMessage
-                    ? await Service.SubmitMessageToNewSession(Bot.Id, userMessage, settings: settings).ConfigureAwait(false)
-                    : await Service.AppendMessageToSession(userMessage, StreamedMessage.ChatSessionId, settings: settings);
+                    ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: settings).ConfigureAwait(false)
+                    : await Service.AppendMessageToSession(_userMessage, StreamedMessage.ChatSessionId, settings: settings);
 
-                chatSessionId = StreamedMessage.ChatSessionId; //keep track of the session id
+                _activeSessionId = StreamedMessage.ChatSessionId; //keep track of the session id
                 IsLoading = false;
                 IsStreaming = false;
 
@@ -141,7 +141,7 @@ namespace Luval.GenAIBotMate.Components
                 }
 
                 //clear the user message
-                userMessage = "";
+                _userMessage = "";
                 await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
@@ -176,8 +176,8 @@ namespace Luval.GenAIBotMate.Components
 
             if (fullSession.ChatMessages == null || !fullSession.ChatMessages.Any()) return;
             ChatTitle = fullSession.Title;
-            userMessage = "";
-            chatSessionId = fullSession.Id;
+            _userMessage = "";
+            _activeSessionId = fullSession.Id;
             Messages.Clear();
             Messages.AddRange(fullSession.ChatMessages);
             StreamedMessage = fullSession.ChatMessages.Last();
