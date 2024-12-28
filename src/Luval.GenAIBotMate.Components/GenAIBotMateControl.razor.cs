@@ -1,4 +1,6 @@
 ﻿using Luval.GenAIBotMate.Core.Entities;
+using Luval.GenAIBotMate.Core.Services;
+using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,15 +41,20 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public required Func<ChatMessageResult, Task> SubmitClicked { get; set; }
 
+        [Parameter]
+        public string? GenAIChatbotName { get; set; }
+
+        [Inject]
+        public required GenAIBotService Service {get;set;}
+
+        [Inject]
+        public required IGenAIBotStorageService StorageService { get; set; }
 
 
+        internal GenAIBot Bot { get; private set; }
 
-        public virtual void AddAgentText(string text)
-        {
-            agentStreamMessage += text;
-            StateHasChanged();
-        }
-
+        
+        
         protected virtual async Task OnSubmitClickedAsync()
         {
 
@@ -65,6 +73,25 @@ namespace Luval.GenAIBotMate.Components
             if (!firstRender)
                 await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+
+        protected virtual async Task InitializeControlAsync(CancellationToken cancellationToken = default)
+        {
+            Service.ChatMessageCompleted += ChatMessageCompletedAsync;
+            Service.ChatMessageStream += ChatMessageStreamAsync;
+            if (Bot == null)
+                Bot = await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task ChatMessageStreamAsync(ChatMessageStreamResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task ChatMessageCompletedAsync(ChatMessageCompletedResult result)
+        {
+            throw new NotImplementedException();
         }
     }
 

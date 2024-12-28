@@ -74,6 +74,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
 
             // Configure GenAIBot relationship with Chatbot
             modelBuilder.Entity<GenAIBot>()
+               .HasIndex(i => i.Name)
+               .IsUnique();
+            modelBuilder.Entity<GenAIBot>()
                .HasIndex(i => i.AccountId);
 
             // Add additional configurations as needed

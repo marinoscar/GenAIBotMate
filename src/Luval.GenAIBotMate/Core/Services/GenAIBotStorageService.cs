@@ -69,16 +69,29 @@ namespace Luval.GenAIBotMate.Core.Services
         }
 
         /// <summary>
-        /// Retrieves a chatbot by its unique identifier.
+        /// Retrieves a Gen AI Bot by its unique identifier.
         /// </summary>
-        /// <param name="chatbotId">The unique identifier of the chatbot.</param>
+        /// <param name="botId">The unique identifier of the Gen AI Bot.</param>
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The chatbot entity if found; otherwise, null.</returns>
-        public async Task<GenAIBot?> GetChatbotAsync(ulong chatbotId, CancellationToken cancellationToken = default)
+        public async Task<GenAIBot?> GetChatbotAsync(ulong botId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.GenAIBots
                 .Include(x => x.ChatSessions)
-                .SingleOrDefaultAsync(x => x.Id == chatbotId, cancellationToken).ConfigureAwait(false);
+                .SingleOrDefaultAsync(x => x.Id == botId, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves a Gen AI Bot by its unique identifier.
+        /// </summary>
+        /// <param name="botName">The unique name of the Gen AI Bot.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>The chatbot entity if found; otherwise, null.</returns>
+        public async Task<GenAIBot?> GetChatbotAsync(string botName, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.GenAIBots
+                .Include(x => x.ChatSessions)
+                .SingleOrDefaultAsync(x => x.Name == botName, cancellationToken).ConfigureAwait(false);
         }
 
 

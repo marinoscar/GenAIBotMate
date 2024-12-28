@@ -40,7 +40,7 @@ namespace Luval.GenAIBotMate.Core.Entities
         /// </summary>
         [Required(ErrorMessage = "Name is required.")]
         [MinLength(3, ErrorMessage = "Name must be at least 3 characters long.")]
-        [MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
+        [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
         [Column("Name")]
         public string Name { get; set; }
 
