@@ -77,7 +77,25 @@ namespace Luval.GenAIBotMate.Components
         public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
 
 
-
+        
+        ///<summary>
+        /// Handles the submission of a user message, processes it using the GenAIBotService, and updates the UI accordingly.
+        /// </summary>
+        /// <remarks>
+        /// This method performs the following steps:
+        /// 1. Sets the loading and streaming states to true and false, respectively.
+        /// 2. Configures the OpenAIPromptExecutionSettings with the temperature and model ID from the Options property.
+        /// 3. Checks if this is the first message in the session.
+        /// 4. Creates a new ChatMessage instance with a loading indicator and adds it to the Messages list.
+        /// 5. Updates the UI to show the loading message.
+        /// 6. Submits the user message to a new session or appends it to an existing session using the GenAIBotService.
+        /// 7. Updates the loading and streaming states to false.
+        /// 8. Clears the Messages list and repopulates it with the chat messages from the current session.
+        /// 9. If this is the first message in the session, updates the session title based on the chat history.
+        /// 10. Updates the UI to reflect the new messages.
+        /// 11. Logs the number of messages in the session.
+        /// 12. Catches any exceptions, logs the error, and rethrows an InvalidOperationException.
+        /// </remarks>
         protected virtual async Task OnSubmitClickedAsync()
         {
             try
