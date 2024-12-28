@@ -11,9 +11,9 @@ namespace Luval.GenAIBotMate.Components.Infrastructure.Data
     {
         public IQueryable<ChatSession> Sessions { get; set; } = default!;
 
-        public Func<HistoryDto, ChatSession, Task> NavigateFunction { get; set; } = default!;
+        public Func<ChatSession, Task> NavigateFunction { get; set; } = default!;
 
-        public Func<HistoryDto, ChatSession, Task> DeleteFunction { get; set; } = default!;
+        public Func<ChatSession, Task> DeleteFunction { get; set; } = default!;
 
     }
 }

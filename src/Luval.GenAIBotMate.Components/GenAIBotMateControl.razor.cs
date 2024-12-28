@@ -219,14 +219,14 @@ namespace Luval.GenAIBotMate.Components
             var result = await _historyDialog.Result;
         }
 
-        protected async Task HandleDelete(HistoryDto history, ChatSession session)
+        protected async Task HandleDelete(ChatSession session)
         {
             if (session == null) return;
             if (session.Id <= 0) return;
             await StorageService.DeleteChatSessionAsync(session.Id);
         }
 
-        protected async Task HandleNavigation(HistoryDto history, ChatSession session)
+        protected async Task HandleNavigation(ChatSession session)
         {
             await LoadSessionAsync(session);
             await _historyDialog?.CloseAsync();

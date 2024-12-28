@@ -42,13 +42,13 @@
     }
 
     private async Task HandleNavigate(ChatSession session){
-        await Content.NavigateFunction?.Invoke(Content, session);
+        await Content.NavigateFunction?.Invoke(session);
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task HandleDelete(ChatSession session)
     {
-        await Content.DeleteFunction?.Invoke(Content, session);
+        await Content.DeleteFunction?.Invoke(session);
         await InvokeAsync(StateHasChanged);
     }
 }
