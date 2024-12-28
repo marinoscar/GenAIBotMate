@@ -24,8 +24,6 @@ namespace Luval.GenAIBotMate.Components
         private string userMessage = "";
         private string agentStreamMessage = "";
 
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
 
         [Parameter]
         public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
@@ -57,6 +55,9 @@ namespace Luval.GenAIBotMate.Components
         [Inject]
         public required IGenAIBotStorageService StorageService { get; set; }
 
+        [Inject]
+        public required IJSRuntime JSRuntime { get; set; }
+
 
         /// <summary>
         /// The GenAIBot instance to be used for the chat.
@@ -72,46 +73,51 @@ namespace Luval.GenAIBotMate.Components
 
         protected virtual async Task OnSubmitClickedAsync()
         {
-
-            IsLoading = true;
-            IsStreaming = false;
-            var settings = new OpenAIPromptExecutionSettings()
+            try
             {
-                Temperature = Options.Temperature,
-                ModelId = Options.Model
-            };
+                IsLoading = true;
+                IsStreaming = false;
+                var settings = new OpenAIPromptExecutionSettings()
+                {
+                    Temperature = Options.Temperature,
+                    ModelId = Options.Model
+                };
 
-            var firstMessage = StreamedMessage == null;
-            //Add the inprogress message to be rendered on the screen
-            StreamedMessage = new ChatMessage()
-            {
-                Id = 9999,
-                UserMessage = userMessage,
-                AgentResponse = "Loading..."
-            };
-            Messages.Add(StreamedMessage);
-            StateHasChanged(); // Update the UI to show the loading message
+                var firstMessage = StreamedMessage == null;
+                // Add the in-progress message to be rendered on the screen
+                StreamedMessage = new ChatMessage()
+                {
+                    Id = 9999,
+                    UserMessage = userMessage,
+                    AgentResponse = "Loading..."
+                };
+                Messages.Add(StreamedMessage);
+                StateHasChanged(); // Update the UI to show the loading message
 
+                StreamedMessage = firstMessage
+                    ? await Service.SubmitMessageToNewSession(Bot.Id, userMessage, settings: settings).ConfigureAwait(false)
+                    : await Service.AppendMessageToSession(userMessage, StreamedMessage.ChatSessionId, settings: settings);
 
-            if (firstMessage)
-                StreamedMessage = await Service.SubmitMessageToNewSession(Bot.Id, userMessage, settings: settings).ConfigureAwait(false);
-            else
-            {
-                StreamedMessage = await Service.AppendMessageToSession(userMessage, StreamedMessage.ChatSessionId, settings: settings);
+                IsLoading = false;
+                IsStreaming = false;
+
+                Messages.Clear();
+                Messages.AddRange(StreamedMessage.ChatSession.ChatMessages);
+                if (Messages.Count == 1)
+                {
+                    await UpdateSessionTitleBasedOnHistoryAsync();
+                }
+
+                StateHasChanged();
+                Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
-
-            IsLoading = false;
-            IsStreaming = false;
-
-            Messages.Clear();
-            Messages.AddRange(StreamedMessage.ChatSession.ChatMessages);
-            if (Messages.Count == 1)
+            catch (Exception ex)
             {
-                await UpdateSessionTitleBasedOnHistoryAsync();
+                IsLoading = false;
+                IsStreaming = false;
+                Debug.WriteLine("Error in OnSubmitClickedAsync: {0}", ex.Message);
+                throw new InvalidOperationException("Error in OnSubmitClickedAsync", ex);
             }
-
-            StateHasChanged();
-            Debug.WriteLine("Message Count: {0}", Messages.Count);
         }
 
         protected override  async Task OnInitializedAsync()
