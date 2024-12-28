@@ -1,4 +1,5 @@
 ﻿@using Luval.GenAIBotMate.Components.Infrastructure.Data
+@using Luval.GenAIBotMate.Core.Entities
 
 @implements IDialogContentComponent<HistoryDto>
 
@@ -8,12 +9,16 @@
         {
             <div style=" display: flex;width: 100%;">
                 <div style="flex-grow: 1;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                    <FluentButton Appearance="Appearance.Outline" Style="width:100%;">@item.Title</FluentButton>
+                    <FluentButton 
+                                Appearance="Appearance.Outline" 
+                                Style="width:100%;"
+                                OnClick="@(() => HandleNavigate(item))">
+                        @item.Title</FluentButton>
                 </div>
                 <div style="flex-grow: 0;flex-basis: auto;">
-                    <FluentAnchor Href="#" Appearance="Appearance.Lightweight">
+                    <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => HandleDelete(item))"  >
                         <FluentIcon Color="Color.Error" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size16.Delete())" />
-                    </FluentAnchor>
+                    </FluentButton>
                 </div>
             </div>
         }
@@ -34,5 +39,16 @@
         if (string.IsNullOrEmpty(input))
             return string.Empty; // Handle null or empty input gracefully.
         return input.Length > charCount ? input.Substring(0, charCount) : input;
+    }
+
+    private async Task HandleNavigate(ChatSession session){
+        await Content.NavigateFunction?.Invoke(Content, session);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleDelete(ChatSession session)
+    {
+        await Content.DeleteFunction?.Invoke(Content, session);
+        await InvokeAsync(StateHasChanged);
     }
 }

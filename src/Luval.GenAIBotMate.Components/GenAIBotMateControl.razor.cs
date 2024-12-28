@@ -158,7 +158,9 @@ namespace Luval.GenAIBotMate.Components
         {
             var sessions = StorageService.GetChatSessions(Bot.Id, null, (i => i.UtcUpdatedOn), false, 20);
             var history = new HistoryDto() {
-                Sessions = sessions
+                Sessions = sessions,
+                DeleteFunction = HandleDelete,
+                NavigateFunction = HandleNavigation
             };
             
             _historyDialog = await DialogService.ShowPanelAsync<MessageHistory>(history, new DialogParameters<HistoryDto>() {
@@ -166,13 +168,24 @@ namespace Luval.GenAIBotMate.Components
                 Alignment = HorizontalAlignment.Right,
                 Title = $"Chat History",
                 PrimaryAction = "Close",
-                SecondaryActionEnabled = false
+                SecondaryActionEnabled = false,
+                SecondaryAction = null
             });
 
             var result = await _historyDialog.Result;
         }
 
+        protected async Task HandleDelete(HistoryDto history, ChatSession session)
+        {
+            if (session == null) return;
+            if (session.Id <= 0) return;
+            await StorageService.DeleteChatSessionAsync(session.Id);
+        }
 
+        protected async Task HandleNavigation(HistoryDto history, ChatSession session)
+        {
+
+        }
         protected override  async Task OnInitializedAsync()
         {
             Service.ChatMessageCompleted += ChatMessageCompletedAsync;
