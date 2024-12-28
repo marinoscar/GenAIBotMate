@@ -113,27 +113,57 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotSqliteStorageServices(this IServiceCollection s)
         {
-            s.AddScoped<IChatDbContext, SqliteChatDbContext>((i) =>
-            {
-                return new SqliteChatDbContext();
-            });
+            s.AddScoped<IChatDbContext, SqliteChatDbContext>();
             return s;
         }
 
         /// <summary>
-        /// Adds default services to the service collection.
+        /// Adds default services to the service collection with a Postgres database.
         /// </summary>
         /// <param name="s">The service collection.</param>
         /// <param name="openAIKey">The OpenAI API key.</param>
         /// <param name="postgresConnectionString">The PostgreSQL connection string.</param>
         /// <param name="azureStorageConnectionString">The Azure storage connection string.</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotDefaultServices(this IServiceCollection s, string openAIKey, string postgresConnectionString, string azureStorageConnectionString)
+        public static IServiceCollection AddGenAIBotServicesWithSqlite(this IServiceCollection s, string openAIKey, string postgresConnectionString, string azureStorageConnectionString)
         {
             s.AddGenAIBotServices();
             s.AddGenAIBotOpenAIServices(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotPostgresStorageServices(postgresConnectionString);
+            return s;
+        }
+
+        /// <summary>
+        /// Adds default services to the service collection with a Sqlite database.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="openAIKey">The OpenAI API key.</param>
+        /// <param name="sqliteConnectionString">The Sqlite connection string.</param>
+        /// <param name="azureStorageConnectionString">The Azure storage connection string.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotServicesWithPostgres(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
+        {
+            s.AddGenAIBotServices();
+            s.AddGenAIBotOpenAIServices(openAIKey);
+            s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
+            s.AddGenAIBotPostgresStorageServices(sqliteConnectionString);
+            return s;
+        }
+
+        /// <summary>
+        /// Adds default services to the service collection with a Sqlite database.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="openAIKey">The OpenAI API key.</param>
+        /// <param name="azureStorageConnectionString">The Azure storage connection string.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotServicesDefault(this IServiceCollection s, string openAIKey, string azureStorageConnectionString)
+        {
+            s.AddGenAIBotServices();
+            s.AddGenAIBotOpenAIServices(openAIKey);
+            s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
+            s.AddGenAIBotSqliteStorageServices();
             return s;
         }
     }
