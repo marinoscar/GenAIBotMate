@@ -82,13 +82,5 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
                .HasColumnType("BIGINT");
 
         }
-
-        public override ValueTask DisposeAsync()
-        {
-            Debug.WriteLine("Disposing PostgresChatDbContext", "IMPORTANT");
-            return base.DisposeAsync();
-        }
-
-
     }
 }
