@@ -26,6 +26,6 @@ namespace Luval.GenAIBotMate.Components.Infrastructure.Configuration
     {
         public const string GPT4o = "gpt-4o";
         public const string GPT4o_Mini = "gpt-4o-mini";
-        public const string GPT35_Turbo = "gpt-3.5-turbo-0125";
+        public const string GPT35_Turbo = "gpt-3.5-turbo";
     }
 }
