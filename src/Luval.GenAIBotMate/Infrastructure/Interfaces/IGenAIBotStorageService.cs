@@ -27,7 +27,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// <param name="botId">The unique identifier of the Gen AI Bot.</param>
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The chatbot entity if found; otherwise, null.</returns>
-        Task<GenAIBot?> GetChatbotAsync(ulong botId, CancellationToken cancellationToken = default)
+        Task<GenAIBot?> GetChatbotAsync(ulong botId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves a Gen AI Bot by its unique identifier.
@@ -35,7 +35,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// <param name="botName">The unique name of the Gen AI Bot.</param>
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The chatbot entity if found; otherwise, null.</returns>
-        Task<GenAIBot?> GetChatbotAsync(string botName, CancellationToken cancellationToken = default)
+        Task<GenAIBot?> GetChatbotAsync(string botName, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates an existing chatbot and saves the changes to the database.
