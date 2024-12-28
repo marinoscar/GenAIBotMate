@@ -19,10 +19,9 @@ namespace Luval.GenAIBotMate.Sample
                 .AddInteractiveServerComponents();
             builder.Services.AddFluentUIComponents();
 
-            //TODO: Add secrests for the OpenAI key, Azure Blob Storage connection string and Postgres connection string
-            builder.Services.AddGenAIBotDefaultServices(
+            //TODO: Add secrests for the OpenAI key, Azure Blob Storage connection string
+            builder.Services.AddGenAIBotServicesDefault(
                 config.GetValue<string>("OpenAIKey"),
-                config.GetValue<string>("DatabaseConnectionString"),
                 config.GetValue<string>("AzureConnectionString")
             );
 
