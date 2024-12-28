@@ -31,7 +31,6 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public string InitialMessage { get; set; } = "Hello! How can I help you today?";
 
-
         [Parameter]
         public string ChatTitle { get; set; } = "New Chat";
 
@@ -120,8 +119,7 @@ namespace Luval.GenAIBotMate.Components
                 {
                     Id = 9999,
                     ChatSessionId = chatSessionId,
-                    UserMessage = userMessage,
-                    AgentResponse = "Loading..."
+                    UserMessage = userMessage
                 };
                 Messages.Add(StreamedMessage);
 
@@ -142,6 +140,8 @@ namespace Luval.GenAIBotMate.Components
                     await UpdateSessionTitleBasedOnHistoryAsync();
                 }
 
+                //clear the user message
+                userMessage = "";
                 await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
@@ -152,6 +152,36 @@ namespace Luval.GenAIBotMate.Components
                 Debug.WriteLine("Error in OnSubmitClickedAsync: {0}", ex.Message);
                 throw new InvalidOperationException("Error in OnSubmitClickedAsync", ex);
             }
+        }
+
+        /// <summary>
+        /// Loads a chat session asynchronously and updates the UI with the session's messages.
+        /// </summary>
+        /// <param name="session">The chat session to load.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <remarks>
+        /// This method performs the following steps:
+        /// 1. Validates the session parameter to ensure it is not null and has a valid ID.
+        /// 2. Clears the current user message and sets the chat session ID.
+        /// 3. Clears the existing messages and adds the messages from the provided session.
+        /// 4. Sets the streamed message to the last message in the session.
+        /// 5. Invokes StateHasChanged to update the UI.
+        /// </remarks>
+        protected virtual async Task LoadSessionAsync(ChatSession session, CancellationToken cancellationToken = default)
+        {
+            if (session == null) return;
+            if (session.Id <= 0) return;
+            //gets the full history
+            var fullSession = await StorageService.GetChatSessionAsync(session.Id, cancellationToken);
+
+            if (fullSession.ChatMessages == null || !fullSession.ChatMessages.Any()) return;
+            ChatTitle = fullSession.Title;
+            userMessage = "";
+            chatSessionId = fullSession.Id;
+            Messages.Clear();
+            Messages.AddRange(fullSession.ChatMessages);
+            StreamedMessage = fullSession.ChatMessages.Last();
+            await InvokeAsync(StateHasChanged);
         }
 
         protected virtual async Task ShowHistoryAsync()
@@ -184,7 +214,8 @@ namespace Luval.GenAIBotMate.Components
 
         protected async Task HandleNavigation(HistoryDto history, ChatSession session)
         {
-
+            await LoadSessionAsync(session);
+            await _historyDialog?.CloseAsync();
         }
         protected override  async Task OnInitializedAsync()
         {

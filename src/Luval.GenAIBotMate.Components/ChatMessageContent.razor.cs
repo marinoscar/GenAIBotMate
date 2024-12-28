@@ -32,7 +32,7 @@ namespace Luval.GenAIBotMate.Components
 
         public MarkupString GetHtmlFromMD(string md)
         {
-            return new MarkupString(Markdown.ToHtml(md, _pipeline));
+            return new MarkupString(Markdown.ToHtml(md ?? "", _pipeline));
         }
     }
 }
