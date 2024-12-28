@@ -23,6 +23,7 @@ namespace Luval.GenAIBotMate.Components
 
         private string userMessage = "";
         private string agentStreamMessage = "";
+        private ulong chatSessionId = 0;
 
 
         [Parameter]
@@ -113,16 +114,19 @@ namespace Luval.GenAIBotMate.Components
                 StreamedMessage = new ChatMessage()
                 {
                     Id = 9999,
+                    ChatSessionId = chatSessionId,
                     UserMessage = userMessage,
                     AgentResponse = "Loading..."
                 };
                 Messages.Add(StreamedMessage);
-                StateHasChanged(); // Update the UI to show the loading message
+
+                await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
 
                 StreamedMessage = firstMessage
                     ? await Service.SubmitMessageToNewSession(Bot.Id, userMessage, settings: settings).ConfigureAwait(false)
                     : await Service.AppendMessageToSession(userMessage, StreamedMessage.ChatSessionId, settings: settings);
 
+                chatSessionId = StreamedMessage.ChatSessionId; //keep track of the session id
                 IsLoading = false;
                 IsStreaming = false;
 
@@ -133,7 +137,7 @@ namespace Luval.GenAIBotMate.Components
                     await UpdateSessionTitleBasedOnHistoryAsync();
                 }
 
-                StateHasChanged();
+                await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
             catch (Exception ex)
@@ -215,12 +219,24 @@ Here is the conversation:
 
         private async Task ChatMessageStreamAsync(ChatMessageStreamResult result)
         {
-            throw new NotImplementedException();
+            IsLoading = false;
+            IsStreaming = true;
+            if (StreamedMessage != null)
+            {
+                StreamedMessage.AgentResponse += result.Content; //append the message from the AI
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         private async Task ChatMessageCompletedAsync(ChatMessageCompletedResult result)
         {
-            throw new NotImplementedException();
+            IsLoading = false;
+            IsStreaming = false;
+            if (StreamedMessage != null)
+            {
+                StreamedMessage.AgentResponse += result.Content; //append the message from the AI
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 
