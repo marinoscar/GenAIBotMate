@@ -322,7 +322,7 @@ Here is the conversation:
         }
     }
 
-    public class ChatMessageResult : EventArgs
+    public class ChatMessageResult
     {
         public string? UserMessage { get; set; }
         public List<ChatMessage>? History { get; set; }

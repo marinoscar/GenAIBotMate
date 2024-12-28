@@ -50,7 +50,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
@@ -79,7 +79,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
@@ -88,7 +88,7 @@ namespace Luval.GenAIBotMate.Tests
 
             var eventRaised = false;
 
-            service.ChatMessageCompleted += (s, e) =>
+            service.ChatMessageCompleted += (e) =>
             {
                 Assert.NotNull(e);
                 Assert.NotNull(e.Content);
@@ -96,6 +96,7 @@ namespace Luval.GenAIBotMate.Tests
                 Assert.True(e.InputTokenCount > 0);
                 Assert.True(e.OutputTokenCount > 0);
                 eventRaised = true;
+                return Task.CompletedTask;
             };
 
             // Act
@@ -116,7 +117,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
@@ -125,10 +126,11 @@ namespace Luval.GenAIBotMate.Tests
 
             var eventRaised = false;
 
-            service.ChatMessageStream += (s, e) =>
+            service.ChatMessageStream += (e) =>
             {
                 Assert.NotNull(e);
                 eventRaised = true;
+                return Task.CompletedTask;
             };
 
             // Act
@@ -157,7 +159,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
@@ -192,7 +194,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();
@@ -241,7 +243,7 @@ namespace Luval.GenAIBotMate.Tests
                 var cb = new GenAIBot()
                 {
                     AccountId = 1,
-                    Name = "Test Chatbot"
+                    Name = "New Test Chatbot"
                 };
                 c!.GenAIBots.Add(cb);
                 c!.SaveChanges();

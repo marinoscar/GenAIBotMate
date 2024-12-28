@@ -34,7 +34,7 @@ namespace Luval.GenAIBotMate.Tests
             var service = CreateService(null);
             var chatbot = new GenAIBot
             {
-                Name = "Test Chatbot",
+                Name = "New Test Chatbot",
                 AccountId = 1
             };
 
@@ -49,7 +49,7 @@ namespace Luval.GenAIBotMate.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Test Chatbot", result.Name);
+            Assert.Equal("New Test Chatbot", result.Name);
             Assert.NotNull(result.CreatedBy);
             Assert.NotNull(result.UpdatedBy);
             Assert.True(result.Id > 0);
@@ -67,22 +67,20 @@ namespace Luval.GenAIBotMate.Tests
         [Fact]
         public async Task GetChatbotAsync_ShouldReturnChatbot_WhenChatbotExists()
         {
-            var chatbotId = 0ul;
             // Arrange
-            var expectedChatbot = new GenAIBot
+            var newBot = new GenAIBot
             {
-                Name = "Test Chatbot",
+                Name = "New Test Chatbot",
                 AccountId = 1
             };
 
             var service = CreateService(context =>
             {
-                context.GenAIBots.Add(expectedChatbot);
+                context.GenAIBots.Add(newBot);
                 context.SaveChanges();
-                chatbotId = context.GenAIBots.First().Id;
                 var chatSession = new ChatSession
                 {
-                    GenAIBotId = chatbotId,
+                    GenAIBotId = newBot.Id,
                     Title = "Test Chat Session",
                     Version = 1
                 };
@@ -109,12 +107,12 @@ namespace Luval.GenAIBotMate.Tests
             });
 
             // Act
-            var result = await service.GetChatbotAsync(chatbotId);
+            var result = await service.GetChatbotAsync(newBot.Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(expectedChatbot.Name, result.Name);
-            Assert.Equal(expectedChatbot.AccountId, result.AccountId);
+            Assert.Equal(newBot.Name, result.Name);
+            Assert.Equal(newBot.AccountId, result.AccountId);
             Assert.NotEmpty(result.ChatSessions);
         }
         [Fact]
@@ -226,7 +224,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1
                 };
                 context.GenAIBots.Add(chatbot);
@@ -288,7 +286,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1
                 };
                 context.GenAIBots.Add(chatbot);
@@ -357,7 +355,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1
                 };
                 context.GenAIBots.Add(chatbot);
@@ -405,7 +403,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1,
                 };
                 context.GenAIBots.Add(chatbot);
@@ -481,7 +479,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1
                 };
                 context.GenAIBots.Add(chatbot);
@@ -549,7 +547,7 @@ namespace Luval.GenAIBotMate.Tests
             {
                 var chatbot = new GenAIBot
                 {
-                    Name = "Test Chatbot",
+                    Name = "New Test Chatbot",
                     AccountId = 1
                 };
                 context.GenAIBots.Add(chatbot);
