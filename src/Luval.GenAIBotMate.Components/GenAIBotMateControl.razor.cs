@@ -184,16 +184,30 @@ namespace Luval.GenAIBotMate.Components
             await InvokeAsync(StateHasChanged);
         }
 
+
+        /// <summary>
+        /// Displays the chat history in a side panel.
+        /// </summary>
+        /// <remarks>
+        /// This method performs the following steps:
+        /// 1. Retrieves the chat sessions for the current bot, ordered by the last updated date, limited to 20 sessions.
+        /// 2. Creates a HistoryDto object containing the retrieved sessions and the delete and navigate functions.
+        /// 3. Displays the chat history in a side panel using the DialogService.
+        /// 4. Waits for the user to close the dialog and captures the result.
+        /// </remarks>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         protected virtual async Task ShowHistoryAsync()
         {
             var sessions = StorageService.GetChatSessions(Bot.Id, null, (i => i.UtcUpdatedOn), false, 20);
-            var history = new HistoryDto() {
+            var history = new HistoryDto()
+            {
                 Sessions = sessions,
                 DeleteFunction = HandleDelete,
                 NavigateFunction = HandleNavigation
             };
-            
-            _historyDialog = await DialogService.ShowPanelAsync<MessageHistory>(history, new DialogParameters<HistoryDto>() {
+
+            _historyDialog = await DialogService.ShowPanelAsync<MessageHistory>(history, new DialogParameters<HistoryDto>()
+            {
                 Content = history,
                 Alignment = HorizontalAlignment.Right,
                 Title = $"Chat History",
