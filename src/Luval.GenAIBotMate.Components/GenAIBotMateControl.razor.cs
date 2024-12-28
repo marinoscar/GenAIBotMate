@@ -1,4 +1,5 @@
 ﻿using Luval.GenAIBotMate.Components.Infrastructure.Configuration;
+using Luval.GenAIBotMate.Components.Infrastructure.Data;
 using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
@@ -24,6 +25,7 @@ namespace Luval.GenAIBotMate.Components
         private string userMessage = "";
         private string agentStreamMessage = "";
         private ulong chatSessionId = 0;
+        private IDialogReference? _historyDialog;
 
 
         [Parameter]
@@ -50,6 +52,9 @@ namespace Luval.GenAIBotMate.Components
 
         [Inject]
         public required IJSRuntime JSRuntime { get; set; }
+
+        [Inject]
+        public required IDialogService DialogService { get; set; }
 
 
         /// <summary>
@@ -148,6 +153,25 @@ namespace Luval.GenAIBotMate.Components
                 throw new InvalidOperationException("Error in OnSubmitClickedAsync", ex);
             }
         }
+
+        protected virtual async Task ShowHistoryAsync()
+        {
+            var sessions = StorageService.GetChatSessions(Bot.Id, null, (i => i.UtcUpdatedOn), false, 20);
+            var history = new HistoryDto() {
+                Sessions = sessions
+            };
+            
+            _historyDialog = await DialogService.ShowPanelAsync<MessageHistory>(history, new DialogParameters<HistoryDto>() {
+                Content = history,
+                Alignment = HorizontalAlignment.Right,
+                Title = $"Chat History",
+                PrimaryAction = "Close",
+                SecondaryActionEnabled = false
+            });
+
+            var result = await _historyDialog.Result;
+        }
+
 
         protected override  async Task OnInitializedAsync()
         {

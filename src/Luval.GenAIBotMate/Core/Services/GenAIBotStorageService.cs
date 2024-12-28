@@ -4,7 +4,9 @@ using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace Luval.GenAIBotMate.Core.Services
 {
@@ -281,6 +283,34 @@ namespace Luval.GenAIBotMate.Core.Services
                 .Include(x => x.ChatMessages)
                 .ThenInclude(m => m.Media)
                 .SingleOrDefaultAsync(x => x.Id == chatSessionId, cancellationToken).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// Retrieves chat sessions for a specific bot with optional filtering, ordering, and limiting.
+        /// </summary>
+        /// <typeparam name="T">The type of the property to order by.</typeparam>
+        /// <param name="botId">The unique identifier of the Gen AI Bot.</param>
+        /// <param name="filterExpression">The filter expression to apply to the chat sessions. Default is null.</param>
+        /// <param name="orderByExpression">The expression to order the chat sessions by. Default is null.</param>
+        /// <param name="orderAsc">Indicates whether to order the chat sessions in ascending order. Default is false.</param>
+        /// <param name="take">The maximum number of chat sessions to retrieve. Default is null.</param>
+        /// <param name="cancellationToken">A token to cancel the operation. Default is default.</param>
+        /// <returns>An IQueryable of chat sessions that match the specified criteria.</returns>
+        public IQueryable<ChatSession> GetChatSessions<T>(ulong botId, Expression<Func<ChatSession, bool>>? filterExpression, Expression<Func<ChatSession, T>>? orderByExpression = null, bool orderAsc = false, int? take = null, CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.ChatSessions
+                .Where(i => i.GenAIBotId == botId);
+
+            if (filterExpression != null)
+                query = query.Where(filterExpression);
+
+            if (orderByExpression != null)
+                query = orderAsc ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
+
+            if (take != null)
+                query = query.Take(take.Value);
+            return query;
         }
 
         #endregion

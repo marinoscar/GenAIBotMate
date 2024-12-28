@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -85,6 +86,19 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The chat session entity if found; otherwise, null.</returns>
         Task<ChatSession?> GetChatSessionAsync(ulong chatSessionId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Retrieves chat sessions for a specific bot with optional filtering, ordering, and limiting.
+        /// </summary>
+        /// <typeparam name="T">The type of the property to order by.</typeparam>
+        /// <param name="botId">The unique identifier of the Gen AI Bot.</param>
+        /// <param name="filterExpression">The filter expression to apply to the chat sessions. Default is null.</param>
+        /// <param name="orderByExpression">The expression to order the chat sessions by. Default is null.</param>
+        /// <param name="orderAsc">Indicates whether to order the chat sessions in ascending order. Default is false.</param>
+        /// <param name="take">The maximum number of chat sessions to retrieve. Default is null.</param>
+        /// <param name="cancellationToken">A token to cancel the operation. Default is default.</param>
+        /// <returns>An IQueryable of chat sessions that match the specified criteria.</returns>
+        public IQueryable<ChatSession> GetChatSessions<T>(ulong botId, Expression<Func<ChatSession, bool>>? filterExpression, Expression<Func<ChatSession, T>>? orderByExpression = null, bool orderAsc = false, int? take = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds a new chat message to a specified chat session and saves it to the database.

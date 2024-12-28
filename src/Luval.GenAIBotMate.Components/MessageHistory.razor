@@ -1,0 +1,38 @@
+﻿@using Luval.GenAIBotMate.Components.Infrastructure.Data
+
+@implements IDialogContentComponent<HistoryDto>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        @foreach (var item in Content.Sessions.OrderByDescending(i => i.UtcUpdatedOn).Take(20))
+        {
+            <div style=" display: flex;width: 100%;">
+                <div style="flex-grow: 1;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                    <FluentButton Appearance="Appearance.Outline" Style="width:100%;">@item.Title</FluentButton>
+                </div>
+                <div style="flex-grow: 0;flex-basis: auto;">
+                    <FluentAnchor Href="#" Appearance="Appearance.Lightweight">
+                        <FluentIcon Color="Color.Error" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size16.Delete())" />
+                    </FluentAnchor>
+                </div>
+            </div>
+        }
+    </FluentStack>
+</FluentDialogBody>
+
+@code {
+    [Parameter]
+    public HistoryDto Content { get; set; } = default!;
+
+    private string TruncateString(string input)
+    {
+        return TruncateString(input, 30);
+    }
+
+    private string TruncateString(string input, int charCount)
+    {
+        if (string.IsNullOrEmpty(input))
+            return string.Empty; // Handle null or empty input gracefully.
+        return input.Length > charCount ? input.Substring(0, charCount) : input;
+    }
+}
