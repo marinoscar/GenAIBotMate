@@ -127,6 +127,11 @@ Here is the conversation:
         {
             IsLoading = false;
             IsStreaming = false;
+            if (_streamMessage != null)
+            {
+                _streamMessage.AgentResponse = e.Content; //append the message from the AI
+                OnUpdateState();
+            }
         }
 
         private void ChatMessageStream(object? sender, ChatMessageStreamEventArgs e)

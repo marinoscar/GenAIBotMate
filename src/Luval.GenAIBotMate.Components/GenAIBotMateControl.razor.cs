@@ -58,7 +58,8 @@ namespace Luval.GenAIBotMate.Components
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
+            if (!firstRender)
+                await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
             await base.OnAfterRenderAsync(firstRender);
         }
     }

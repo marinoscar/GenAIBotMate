@@ -1,4 +1,35 @@
-﻿
+﻿<style>
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: var(--neutral-foreground-rest);
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid var(--accent-fill-rest);
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid var(--accent-fill-rest);
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid var(--accent-fill-rest);
+        }
+
+    .table-sm th,
+    .table-sm td {
+        padding: 0.3rem;
+    }
+
+</style>
+
+
 <FluentCard>
     <FluentStack>
         <div><FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.PersonChat())" /></div>
