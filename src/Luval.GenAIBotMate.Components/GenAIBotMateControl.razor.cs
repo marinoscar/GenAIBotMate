@@ -26,16 +26,8 @@ namespace Luval.GenAIBotMate.Components
 
 
         [Parameter]
-        public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
-
-        [Parameter]
         public string InitialMessage { get; set; } = "Hello! How can I help you today?";
 
-        [Parameter]
-        public bool IsLoading { get; set; } = false;
-
-        [Parameter]
-        public bool IsStreaming { get; set; } = false;
 
         [Parameter]
         public string ChatTitle { get; set; } = "New Chat";
@@ -68,6 +60,21 @@ namespace Luval.GenAIBotMate.Components
         /// The ChatMessage instance to be streamed.
         /// </summary>
         internal ChatMessage StreamedMessage { get; private set; } = default!;
+
+        /// <summary>
+        /// The ChatSession is loading
+        /// </summary>
+        protected bool IsLoading { get; set; } = false;
+
+        /// <summary>
+        /// The ChatSession instance to be streamed.
+        /// </summary>
+        protected bool IsStreaming { get; set; } = false;
+
+        /// <summary>
+        /// The messages to be rendered on the screen.
+        /// </summary>
+        public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
 
 
 
