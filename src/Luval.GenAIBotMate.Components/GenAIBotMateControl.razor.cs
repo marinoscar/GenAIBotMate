@@ -271,8 +271,9 @@ Here is the conversation:
 
 {body}
 
-- Keep the title to less than 80 characters 
+- Keep the title to just a few short words 
 - Just return the title on a single line and nothing else.
+- Title not exceed 80 characters
 
 ";
             var body = new StringBuilder();
@@ -283,7 +284,7 @@ Here is the conversation:
             var settings = new OpenAIPromptExecutionSettings()
             {
                 Temperature = 0.8,
-                ModelId = "gpt-3.5-turbo"
+                ModelId = OpenAIModels.GPT35_Turbo
             };
             var res = await Service.GetChatMessageAsync(prompt.Replace("{body}", body.ToString()), settings);
             var content = res.Items.Where(i => i is TextContent).Select(i => i as TextContent).ToList();
@@ -294,7 +295,6 @@ Here is the conversation:
         private async Task<GenAIBot?> GetBotAsync(CancellationToken cancellationToken)
         {
             if (Bot != null) return Bot;
-            Debug.WriteLine("Getting bot from storage", "IMPORTANT");
             var bot = await StorageService.GetChatbotAsync(GenAIChatbotName, cancellationToken).ConfigureAwait(false);
             return bot ?? await StorageService.GetChatbotAsync(1, cancellationToken).ConfigureAwait(false);
         }
