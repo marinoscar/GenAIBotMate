@@ -5,10 +5,40 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Title>$(AssemblyName)</Title>
+    <Authors>Oscar Marin</Authors>
+    <PackageProjectUrl>https://github.com/marinoscar/GenAIBotMate</PackageProjectUrl>
+    <Description>GenAIBotMate is a C# library that enables developers to interface with Large Language Models (LLMs), persist chat conversations, and provide an API to retrieve past interactions. The library also supports persisting uploaded files, including images, to cloud storage providers like Azure Blob Storage and AWS S3.</Description>
+    <Copyright>Oscar Marin</Copyright>
+    <RepositoryUrl>https://github.com/marinoscar/GenAIBotMate</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>logo-nobg.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>- Initial realease</PackageReleaseNotes>
+    <ApplicationIcon>logo_icon.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="logo_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\media\logo-nobg.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
