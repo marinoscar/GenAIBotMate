@@ -82,12 +82,40 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <param name="s">The service collection.</param>
         /// <param name="postgresConnectionString">The PostgreSQL connection string.</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotStorageServices(this IServiceCollection s, string postgresConnectionString)
+        public static IServiceCollection AddGenAIBotPostgresStorageServices(this IServiceCollection s, string postgresConnectionString)
         {
             s.AddScoped<IChatDbContext, PostgresChatDbContext>((i) =>
             {
-                Debug.WriteLine($"Creating PostgresChatDbContext");
                 return new PostgresChatDbContext(postgresConnectionString);
+            });
+            return s;
+        }
+
+        /// <summary>
+        /// Adds storage services to the service collection.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="sqliteConnectionString">The Sqlite connection string.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotSqliteStorageServices(this IServiceCollection s, string sqliteConnectionString)
+        {
+            s.AddScoped<IChatDbContext, SqliteChatDbContext>((i) =>
+            {
+                return new SqliteChatDbContext(sqliteConnectionString);
+            });
+            return s;
+        }
+
+        /// <summary>
+        /// Adds storage services to the service collection.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotSqliteStorageServices(this IServiceCollection s)
+        {
+            s.AddScoped<IChatDbContext, SqliteChatDbContext>((i) =>
+            {
+                return new SqliteChatDbContext();
             });
             return s;
         }
@@ -105,7 +133,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
             s.AddGenAIBotServices();
             s.AddGenAIBotOpenAIServices(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
-            s.AddGenAIBotStorageServices(postgresConnectionString);
+            s.AddGenAIBotPostgresStorageServices(postgresConnectionString);
             return s;
         }
     }
