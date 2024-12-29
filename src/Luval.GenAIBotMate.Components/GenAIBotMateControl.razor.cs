@@ -4,6 +4,7 @@ using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
@@ -28,20 +29,47 @@ namespace Luval.GenAIBotMate.Components
         private IDialogReference? _historyDialog;
 
 
+        /// <summary>
+        /// The initial message to be displayed in the chat.
+        /// </summary>
         [Parameter]
         public string InitialMessage { get; set; } = "Hello! How can I help you today?";
 
+        /// <summary>
+        /// The title of the chat.
+        /// </summary>
         [Parameter]
         public string ChatTitle { get; set; } = "New Chat";
 
+        /// <summary>
+        /// The function to be called when the submit button is clicked.
+        /// </summary>
         [Parameter]
         public required Func<ChatMessageResult, Task> SubmitClicked { get; set; }
 
+        /// <summary>
+        /// The name of the GenAI chatbot.
+        /// </summary>
         [Parameter]
         public string? GenAIChatbotName { get; set; }
 
+        /// <summary>
+        /// The options for configuring the GenAIBot.
+        /// </summary>
         [Parameter]
         public GenAIBotOptions Options { get; set; } = new GenAIBotOptions();
+
+        /// <summary>
+        /// Indicates whether to hide the header.
+        /// </summary>
+        [Parameter]
+        public bool HideHeader { get; set; } = false;
+
+        /// <summary>
+        /// Indicates whether to send the message to the bot with the user presses the Enter key.
+        /// </summary>
+        [Parameter]
+        public bool SubmitMessageOnEnterKey { get; set; } = true;
 
         [Inject]
         public required GenAIBotService Service { get; set; }
@@ -232,6 +260,16 @@ namespace Luval.GenAIBotMate.Components
             });
 
             var result = await _historyDialog.Result;
+        }
+
+        private async Task HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (!SubmitMessageOnEnterKey) return;
+            if (e.Key == "Enter" && !e.ShiftKey)
+            {
+                _userMessage = await JSRuntime.InvokeAsync<string>("getTextAreaValue");
+                await OnSubmitClickedAsync();
+            }
         }
 
         protected async Task HandleDelete(ChatSession session)

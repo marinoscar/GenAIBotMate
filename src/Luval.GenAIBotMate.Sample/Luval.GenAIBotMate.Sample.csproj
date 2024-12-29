@@ -1,17 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f48b1c9a-044a-46fd-95f1-f05778705fa6</UserSecretsId>
+    <Version>1.0.2</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.*-*" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.*-*" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Luval.GenAIBotMate.Components\Luval.GenAIBotMate.Components.csproj" />
     <ProjectReference Include="..\Luval.GenAIBotMate\Luval.GenAIBotMate.csproj" />

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -16,20 +15,17 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>- Initial realease</PackageReleaseNotes>
     <ApplicationIcon>logo_icon.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>1.0.2</Version>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="logo_icon.ico" />
   </ItemGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\..\media\logo-nobg.png">
       <Pack>True</Pack>
@@ -40,17 +36,12 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.39.1" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.0" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Luval.GenAIBotMate\Luval.GenAIBotMate.csproj" />
   </ItemGroup>
-
-
-
 </Project>

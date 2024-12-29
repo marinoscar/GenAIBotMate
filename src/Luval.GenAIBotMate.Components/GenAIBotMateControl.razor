@@ -54,13 +54,13 @@
 
 <div>
     <FluentLayout>
-        <FluentHeader>
-            <FluentButton IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.SettingsChat())"></FluentButton>
-            <FluentSpacer />
-            @ChatTitle
-            <FluentSpacer />
-            <FluentAnchor Href="/swagger" Target="_blank">API</FluentAnchor>
-        </FluentHeader>
+        @if(HideHeader){
+            <FluentHeader>
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
+                    @ChatTitle
+                </FluentStack>
+            </FluentHeader>
+        }
         <div id="content-list">
             @if (IsLoading)
             {
@@ -100,7 +100,7 @@
             <FluentCard Class="chat-card">
                 <FluentStack Orientation="Orientation.Vertical">
                     <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
-                        <textarea placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
+                        <textarea id="chat-bot-textarea"  @onkeydown="HandleKeyDown" placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
                                       Style="margin-top:6px;"
@@ -135,6 +135,11 @@
             console.log("called the scroll method with pos: " + pos + " and target: " + target) ;
             el.scrollIntoView({ behavior: 'smooth',top: target });
         }
+    }
+
+    function getTextAreaValue() {
+        const textarea = document.getElementById("chat-bot-textarea");
+        return textarea ? textarea.value : "";
     }
 
     document.addEventListener("DOMContentLoaded", function() {
