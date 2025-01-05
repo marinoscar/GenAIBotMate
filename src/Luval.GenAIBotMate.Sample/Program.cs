@@ -46,8 +46,8 @@ namespace Luval.GenAIBotMate.Sample
 
             // Initialize the database
             var context = new SqliteChatDbContext();
-            var dbHelper = new GenAIBotContextHelper(new ColorConsoleLogger<GenAIBotContextHelper>());
-            dbHelper.InitializeAsync(context)
+            var dbHelper = new GenAIBotContextHelper(context, new ColorConsoleLogger<GenAIBotContextHelper>());
+            dbHelper.InitializeAsync()
                 .GetAwaiter()
                 .GetResult();
             app.Run();
