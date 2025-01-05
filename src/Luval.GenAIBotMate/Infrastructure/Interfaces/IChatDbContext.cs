@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Luval.GenAIBotMate.Infrastructure.Interfaces
 {
@@ -39,6 +40,11 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// The ChangeTracker for the context.
         /// </summary>
         public ChangeTracker ChangeTracker { get; }
+
+        /// <summary>
+        /// The Model for the context.
+        /// </summary>
+        public IModel Model { get; }
 
         /// <summary>
         /// Saves the changes made to the context.
