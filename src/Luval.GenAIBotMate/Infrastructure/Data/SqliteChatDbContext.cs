@@ -50,7 +50,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
 
             // Add connection string if provided
             if (!string.IsNullOrEmpty(_connectionString))
-                optionsBuilder.UseSqlite(_connectionString);
+                optionsBuilder.UseSqlite(_connectionString, (o) => {
+                    o.MigrationsHistoryTable("__EFMigrationsHistory_BotMate", "botmate");
+                });
         }
     }
 }

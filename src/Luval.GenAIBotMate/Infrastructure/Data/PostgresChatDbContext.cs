@@ -51,10 +51,12 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             //continue with regular implementation
             base.OnConfiguring(optionsBuilder);
 
-
+            
             //add conn string if provided
             if (!string.IsNullOrEmpty(_connectionString))
-                optionsBuilder.UseNpgsql(_connectionString);
+                optionsBuilder.UseNpgsql(_connectionString, (o) => { 
+                    o.MigrationsHistoryTable("__EFMigrationsHistory_BotMate", "botmate");
+                });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
