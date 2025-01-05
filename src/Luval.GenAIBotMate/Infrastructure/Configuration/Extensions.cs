@@ -36,22 +36,40 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         }
 
         /// <summary>
-        /// Adds OpenAI services to the service collection.
+        /// Adds the Semantic Kernel to the service collection using a factory method.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="factory">The factory method to create the Kernel instance.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, Func<IServiceProvider, Kernel> factory)
+        {
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+            s.AddScoped<Kernel>((i) =>
+            {
+                return factory?.Invoke(i);
+            });
+            s.AddScoped<IChatCompletionService>((i) => {
+                var kernel = i.GetRequiredService<Kernel>();
+                return kernel.GetRequiredService<IChatCompletionService>();
+            });
+            return s;
+        }
+
+        /// <summary>
+        /// Adds the Semantic Kernel to the service collection using OpenAI credentials.
         /// </summary>
         /// <param name="s">The service collection.</param>
         /// <param name="openAIKey">The OpenAI API key.</param>
         /// <param name="openAIModel">The OpenAI model to use. Default is "gpt-4o".</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotOpenAIServices(this IServiceCollection s, string openAIKey, string openAIModel = "gpt-4o")
+        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, string openAIKey, string openAIModel = "gpt-4o")
         {
-            s.AddScoped<IChatCompletionService>((i) =>
+            return s.AddGenAIBotSemanticKernel((i) =>
             {
-                var kernel = Kernel.CreateBuilder()
+                return Kernel.CreateBuilder()
                             .AddOpenAIChatCompletion(openAIModel, openAIKey)
                             .Build();
-                return kernel.GetRequiredService<IChatCompletionService>();
             });
-            return s;
         }
 
         /// <summary>
@@ -117,7 +135,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         public static IServiceCollection AddGenAIBotServicesWithSqlite(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
         {
             s.AddGenAIBotServices();
-            s.AddGenAIBotOpenAIServices(openAIKey);
+            s.AddGenAIBotSemanticKernel(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotSqliteStorageServices(sqliteConnectionString);
             return s;
@@ -134,7 +152,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         public static IServiceCollection AddGenAIBotServicesWithPostgres(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
         {
             s.AddGenAIBotServices();
-            s.AddGenAIBotOpenAIServices(openAIKey);
+            s.AddGenAIBotSemanticKernel(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotPostgresStorageServices(sqliteConnectionString);
             return s;
@@ -151,7 +169,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         public static IServiceCollection AddGenAIBotServicesDefault(this IServiceCollection s, string openAIKey, string azureStorageConnectionString, string sqliteConnectionString = "Data Source=botmate.db")
         {
             s.AddGenAIBotServices();
-            s.AddGenAIBotOpenAIServices(openAIKey);
+            s.AddGenAIBotSemanticKernel(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotSqliteStorageServices(sqliteConnectionString);
             return s;
