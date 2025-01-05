@@ -41,13 +41,20 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <param name="s">The service collection.</param>
         /// <param name="factory">The factory method to create the Kernel instance.</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, Func<IServiceProvider, Kernel> factory)
+        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, Func<IServiceProvider, IKernelBuilder> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
+            //add a builder
+            s.AddScoped<IKernelBuilder>(i => {
+                return factory(i);
+            });
+            //add the kernel
             s.AddScoped<Kernel>((i) =>
             {
-                return factory?.Invoke(i);
+                var builder = i.GetRequiredService<IKernelBuilder>();
+                return builder.Build();
             });
+            //add the chat completion service
             s.AddScoped<IChatCompletionService>((i) => {
                 var kernel = i.GetRequiredService<Kernel>();
                 return kernel.GetRequiredService<IChatCompletionService>();
@@ -59,16 +66,16 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// Adds the Semantic Kernel to the service collection using OpenAI credentials.
         /// </summary>
         /// <param name="s">The service collection.</param>
-        /// <param name="openAIKey">The OpenAI API key.</param>
         /// <param name="openAIModel">The OpenAI model to use. Default is "gpt-4o".</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, string openAIKey, string openAIModel = "gpt-4o")
+        public static IServiceCollection AddGenAIBotSemanticKernel(this IServiceCollection s, string openAIModel = "gpt-4o")
         {
+            //add the builder with the OpenAI credentials
             return s.AddGenAIBotSemanticKernel((i) =>
             {
+                var keyProv = i.GetRequiredService<OpenAIKeyProvider>();
                 return Kernel.CreateBuilder()
-                            .AddOpenAIChatCompletion(openAIModel, openAIKey)
-                            .Build();
+                            .AddOpenAIChatCompletion(openAIModel, keyProv.GetKey());
             });
         }
 
@@ -134,8 +141,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotServicesWithSqlite(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
         {
+            s.AddSingleton(new OpenAIKeyProvider(openAIKey));
             s.AddGenAIBotServices();
-            s.AddGenAIBotSemanticKernel(openAIKey);
+            s.AddGenAIBotSemanticKernel();
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotSqliteStorageServices(sqliteConnectionString);
             return s;
@@ -151,8 +159,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotServicesWithPostgres(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
         {
+            s.AddSingleton(new OpenAIKeyProvider(openAIKey));
             s.AddGenAIBotServices();
-            s.AddGenAIBotSemanticKernel(openAIKey);
+            s.AddGenAIBotSemanticKernel();
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotPostgresStorageServices(sqliteConnectionString);
             return s;
@@ -168,8 +177,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotServicesDefault(this IServiceCollection s, string openAIKey, string azureStorageConnectionString, string sqliteConnectionString = "Data Source=botmate.db")
         {
+            s.AddSingleton(new OpenAIKeyProvider(openAIKey));
             s.AddGenAIBotServices();
-            s.AddGenAIBotSemanticKernel(openAIKey);
+            s.AddGenAIBotSemanticKernel();
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotSqliteStorageServices(sqliteConnectionString);
             return s;
