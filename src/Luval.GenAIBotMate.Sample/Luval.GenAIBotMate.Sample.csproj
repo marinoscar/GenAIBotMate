@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f48b1c9a-044a-46fd-95f1-f05778705fa6</UserSecretsId>
-    <Version>1.0.9</Version>
+    <Version>1.0.10</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="app.db" />
