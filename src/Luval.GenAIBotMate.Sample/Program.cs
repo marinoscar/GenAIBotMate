@@ -43,7 +43,7 @@ namespace Luval.GenAIBotMate.Sample
                 .AddInteractiveServerRenderMode();
 
             // Initialize the database
-            DbHelper.InitializeAsync(new SqliteChatDbContext())
+            GenAIBotContextHelper.InitializeAsync(new SqliteChatDbContext())
                 .GetAwaiter()
                 .GetResult();
 
