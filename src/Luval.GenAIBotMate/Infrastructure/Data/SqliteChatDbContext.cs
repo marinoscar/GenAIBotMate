@@ -18,7 +18,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteChatDbContext"/> class with the default connection string.
         /// </summary>
-        public SqliteChatDbContext() : this("Data Source=app.db")
+        public SqliteChatDbContext() : this("Data Source=botmate.db")
         {
         }
 
