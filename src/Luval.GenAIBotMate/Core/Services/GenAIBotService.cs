@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace Luval.GenAIBotMate.Core.Services
 {
+    /// <summary>
+    /// Services for the GenAIBot.
+    /// </summary>
     public class GenAIBotService
     {
 
