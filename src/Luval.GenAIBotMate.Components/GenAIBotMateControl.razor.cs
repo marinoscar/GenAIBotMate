@@ -71,7 +71,7 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public bool SubmitMessageOnEnterKey { get; set; } = true;
 
-        [Inject]
+        [Parameter]
         public required GenAIBotService Service { get; set; }
 
         [Inject]
