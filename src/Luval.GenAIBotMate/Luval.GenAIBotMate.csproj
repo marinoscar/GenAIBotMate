@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>GenAIBotMate</Title>
-    <Version>1.0.9</Version>
+    <Version>1.0.10</Version>
     <Authors>Oscar Marin</Authors>
     <Copyright>Oscar Marin</Copyright>
     <PackageProjectUrl>https://github.com/marinoscar/GenAIBotMate</PackageProjectUrl>
