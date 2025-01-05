@@ -399,3 +399,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /src/Luval.GenAIBotMate.Sample/app.db
+/src/Luval.GenAIBotMate.Sample/botmate.db
+/src/Luval.GenAIBotMate.Sample/botmate.db-shm
+/src/Luval.GenAIBotMate.Sample/botmate.db-wal
