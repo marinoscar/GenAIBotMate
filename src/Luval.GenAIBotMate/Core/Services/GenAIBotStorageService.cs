@@ -91,9 +91,10 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <returns>The chatbot entity if found; otherwise, null.</returns>
         public async Task<GenAIBot?> GetChatbotAsync(string botName, CancellationToken cancellationToken = default)
         {
+            var user = _userResolver.GetUser();
             return await _dbContext.GenAIBots
                 .Include(x => x.ChatSessions)
-                .SingleOrDefaultAsync(x => x.Name == botName, cancellationToken).ConfigureAwait(false);
+                .SingleOrDefaultAsync(x => x.AccountId == user.AccountId &&  x.Name == botName, cancellationToken).ConfigureAwait(false);
         }
 
 
