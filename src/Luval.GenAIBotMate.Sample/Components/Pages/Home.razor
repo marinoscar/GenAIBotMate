@@ -7,11 +7,14 @@
 
 <PageTitle>Home</PageTitle>
 
-<GenAIBotMateControl @ref="Control" 
+<GenAIBotMateControl @ref="Control" Service="@BotService" 
 ChatTitle="New Chat">
 
 </GenAIBotMateControl>
 
 @code {
     private GenAIBotMateControl Control { get; set; }
+
+    [Inject]
+    private GenAIBotService BotService { get; set; }
 }
