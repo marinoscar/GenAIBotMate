@@ -15,7 +15,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
     public class GenAIBotContextHelper
     {
         
-mary>
+        /// <summary>
         /// Initializes the database context by ensuring the database is created, applying any pending migrations, and seeding initial data.
         /// </summary>
         /// <param name="context">The database context to initialize.</param>
