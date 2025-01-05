@@ -111,15 +111,15 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// </summary>
         /// <param name="s">The service collection.</param>
         /// <param name="openAIKey">The OpenAI API key.</param>
-        /// <param name="postgresConnectionString">The PostgreSQL connection string.</param>
+        /// <param name="sqliteConnectionString">The PostgreSQL connection string.</param>
         /// <param name="azureStorageConnectionString">The Azure storage connection string.</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotServicesWithSqlite(this IServiceCollection s, string openAIKey, string postgresConnectionString, string azureStorageConnectionString)
+        public static IServiceCollection AddGenAIBotServicesWithSqlite(this IServiceCollection s, string openAIKey, string sqliteConnectionString, string azureStorageConnectionString)
         {
             s.AddGenAIBotServices();
             s.AddGenAIBotOpenAIServices(openAIKey);
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
-            s.AddGenAIBotPostgresStorageServices(postgresConnectionString);
+            s.AddGenAIBotSqliteStorageServices(sqliteConnectionString);
             return s;
         }
 
