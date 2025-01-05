@@ -56,10 +56,10 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
                 var createScript = context.Database.GenerateCreateScript();
                 await context.Database.ExecuteSqlRawAsync(createScript, cancellationToken);
             }
-            // Add some data
-            _logger.LogInformation("Seeding initial data...");
             if (!(await context.GenAIBots.AnyAsync(cancellationToken)))
             {
+                // Add some data
+                _logger.LogInformation("Seeding initial data...");
                 context.GenAIBots.Add(new GenAIBot
                 {
                     Name = "Gen AI Bot",
