@@ -1,4 +1,5 @@
-﻿using Luval.AuthMate.Core.Interfaces;
+﻿using Luval.AuthMate.Core.Entities;
+using Luval.AuthMate.Core.Interfaces;
 using Luval.AuthMate.Infrastructure.Logging;
 using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
@@ -18,6 +19,8 @@ namespace Luval.GenAIBotMate.Tests
             context.Initialize();
             var userResolverMock = new Mock<IUserResolver>();
             userResolverMock.Setup(x => x.GetUserEmail()).Returns("user@email.com");
+            userResolverMock.Setup(x => x.GetUser()).Returns(new AppUser() { AccountId = 1, Email = "user@email.com", Id = 1 });
+
             var service = new GenAIBotStorageService(context, new NullLogger<GenAIBotStorageService>(), userResolverMock.Object);
 
             workOnContext?.Invoke(context);
