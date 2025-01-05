@@ -1,7 +1,9 @@
+using Luval.AuthMate.Infrastructure.Logging;
 using Luval.GenAIBotMate.Infrastructure.Configuration;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Luval.GenAIBotMate.Sample.Components;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Luval.GenAIBotMate.Sample
@@ -43,10 +45,11 @@ namespace Luval.GenAIBotMate.Sample
                 .AddInteractiveServerRenderMode();
 
             // Initialize the database
-            GenAIBotContextHelper.InitializeAsync(new SqliteChatDbContext())
+            var context = new SqliteChatDbContext();
+            var dbHelper = new GenAIBotContextHelper(new ColorConsoleLogger<GenAIBotContextHelper>());
+            dbHelper.InitializeAsync(context)
                 .GetAwaiter()
                 .GetResult();
-
             app.Run();
         }
     }
