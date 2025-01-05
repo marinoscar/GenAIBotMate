@@ -55,7 +55,6 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             // Make sure the DB is created
             if (!await _context.Database.CanConnectAsync())
             {
-                _logger.LogInformation("Database does not exist. Running first migration...");
                 await CreateDatabaseAsync(cancellationToken);
             }
             if (!CheckForTables())
@@ -82,6 +81,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
 
         private async Task CreateDatabaseAsync(CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Database does not exist. Running first migration...");
             var createScript = _context.Database.GenerateCreateScript();
             await _context.Database.ExecuteSqlRawAsync(createScript, cancellationToken);
         }
