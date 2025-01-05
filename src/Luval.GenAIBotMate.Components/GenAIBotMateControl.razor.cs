@@ -267,7 +267,9 @@ namespace Luval.GenAIBotMate.Components
             if (!SubmitMessageOnEnterKey) return;
             if (e.Key == "Enter" && !e.ShiftKey)
             {
-                _userMessage = await JSRuntime.InvokeAsync<string>("getTextAreaValue");
+                var message = await JSRuntime.InvokeAsync<string>("getTextAreaValue");
+                //remove the last character which is the new line
+                _userMessage = message.Length > 0 ? message.Substring(0, message.Length - 1) : string.Empty;
                 await OnSubmitClickedAsync();
             }
         }
