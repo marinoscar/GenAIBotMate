@@ -100,4 +100,5 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             }
             return true;
         }
+    }
 }
