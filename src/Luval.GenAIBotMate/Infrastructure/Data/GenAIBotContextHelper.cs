@@ -52,40 +52,25 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             // Make sure the DB is created
             if (!await context.Database.CanConnectAsync())
             {
-                _logger.LogInformation("Database does not exist. Creating database...");
-                await context.Database.EnsureCreatedAsync();
+                _logger.LogInformation("Database does not exist. Running first migration...");
+                var createScript = context.Database.GenerateCreateScript();
+                await context.Database.ExecuteSqlRawAsync(createScript, cancellationToken);
             }
-            else
+            // Add some data
+            _logger.LogInformation("Seeding initial data...");
+            if (!(await context.GenAIBots.AnyAsync(cancellationToken)))
             {
-                _logger.LogInformation("Database exists. Checking for pending migrations...");
-                // Migrate if necessary
-                var pendingMigrations = await context.Database.GetPendingMigrationsAsync(cancellationToken);
-                if (pendingMigrations.Any())
+                context.GenAIBots.Add(new GenAIBot
                 {
-                    _logger.LogInformation("Applying pending migrations...");
-                    await context.Database.MigrateAsync(cancellationToken);
-                }
-                else
-                {
-                    _logger.LogInformation("No pending migrations found.");
-                }
-
-                // Add some data
-                _logger.LogInformation("Seeding initial data...");
-                if (!(await context.GenAIBots.AnyAsync(cancellationToken)))
-                {
-                    context.GenAIBots.Add(new GenAIBot
-                    {
-                        Name = "Gen AI Bot",
-                        UtcCreatedOn = DateTime.UtcNow,
-                        CreatedBy = "System",
-                        UtcUpdatedOn = DateTime.UtcNow,
-                        UpdatedBy = "System",
-                        Version = 1
-                    });
-                    await context.SaveChangesAsync(cancellationToken);
-                    _logger.LogInformation("Initial data seeded.");
-                }
+                    Name = "Gen AI Bot",
+                    UtcCreatedOn = DateTime.UtcNow,
+                    CreatedBy = "System",
+                    UtcUpdatedOn = DateTime.UtcNow,
+                    UpdatedBy = "System",
+                    Version = 1
+                });
+                await context.SaveChangesAsync(cancellationToken);
+                _logger.LogInformation("Initial data seeded.");
             }
         }
     }
