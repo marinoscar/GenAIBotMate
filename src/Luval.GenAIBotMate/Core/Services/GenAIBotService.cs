@@ -369,6 +369,10 @@ namespace Luval.GenAIBotMate.Core.Services
         /// otherwise null will be passed to the ChatCompletionService.
         /// </summary>
         /// <param name="kernel"></param>
+        /// <remarks>
+        /// The reason this is done this way is to simplify the test cases also to make the dependency injection more flexible
+        /// and allow multiple instances of the <see cref="IChatCompletionService"/> to be used with different <see cref="Kernel"/> instances
+        /// </remarks>
         public void SetKernel(Kernel kernel)
         {
             _kernel = kernel;
