@@ -1,5 +1,4 @@
-﻿using Luval.GenAIBotMate.Components.Infrastructure.Configuration;
-using Luval.GenAIBotMate.Components.Infrastructure.Data;
+﻿using Luval.GenAIBotMate.Components.Infrastructure.Data;
 using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
@@ -52,12 +51,6 @@ namespace Luval.GenAIBotMate.Components
         /// </summary>
         [Parameter]
         public string? GenAIChatbotName { get; set; }
-
-        /// <summary>
-        /// The options for configuring the GenAIBot.
-        /// </summary>
-        [Parameter]
-        public GenAIBotOptions Options { get; set; } = new GenAIBotOptions();
 
         /// <summary>
         /// Indicates whether to hide the header.
@@ -144,11 +137,6 @@ namespace Luval.GenAIBotMate.Components
             {
                 IsLoading = true;
                 IsStreaming = false;
-                var settings = new OpenAIPromptExecutionSettings()
-                {
-                    Temperature = Options.Temperature,
-                    ModelId = Options.Model
-                };
 
                 var firstMessage = StreamedMessage == null;
                 // Add the in-progress message to be rendered on the screen
@@ -161,10 +149,10 @@ namespace Luval.GenAIBotMate.Components
                 Messages.Add(StreamedMessage);
 
                 await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
-
+                
                 StreamedMessage = firstMessage
-                    ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: settings).ConfigureAwait(false)
-                    : await Service.AppendMessageToSession(_userMessage, StreamedMessage.ChatSessionId, settings: settings);
+                    ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: PromptSettings).ConfigureAwait(false)
+                    : await Service.AppendMessageToSession(_userMessage, StreamedMessage.ChatSessionId, settings: PromptSettings);
 
                 _activeSessionId = StreamedMessage.ChatSessionId; //keep track of the session id
                 IsLoading = false;
