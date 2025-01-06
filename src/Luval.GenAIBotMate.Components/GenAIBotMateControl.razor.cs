@@ -71,8 +71,17 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public bool SubmitMessageOnEnterKey { get; set; } = true;
 
+        /// <summary>
+        /// The GenAIBotService instance to be used for the chat.
+        /// </summary>
         [Parameter]
         public required GenAIBotService Service { get; set; }
+
+        /// <summary>
+        /// The OpenAIPromptExecutionSettings to be used for the chat.
+        /// </summary>
+        [Parameter]
+        public required OpenAIPromptExecutionSettings PromptSettings { get; set; } = new OpenAIPromptExecutionSettings() { Temperature = 0.7 };
 
         [Inject]
         public required IGenAIBotStorageService StorageService { get; set; }
