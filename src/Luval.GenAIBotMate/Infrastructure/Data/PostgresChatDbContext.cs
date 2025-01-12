@@ -41,7 +41,7 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
         /// Initializes a new instance of the <see cref="PostgresChatDbContext"/> class with the specified connection string.
         /// </summary>
         /// <param name="connectionString">The connection string to the PostgreSQL database.</param>
-        public PostgresChatDbContext(string connectionString) : base(new DbContextOptionsBuilder<ChatDbContext>().UseNpgsql(connectionString).Options)
+        public PostgresChatDbContext(string connectionString) 
         {
             _connectionString = connectionString ?? throw new ArgumentException(nameof(connectionString));
         }
