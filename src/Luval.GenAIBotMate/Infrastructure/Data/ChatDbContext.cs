@@ -83,13 +83,28 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
         }
 
+        /// <summary>
+        /// Configures the database context options.
+        /// </summary>
+        /// <param name="optionsBuilder">The options builder used to configure the context.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChatDbContext"/> class with the specified options.
+        /// </summary>
+        /// <param name="options">The options to be configured.</param>
         public ChatDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChatDbContext"/> class.
+        /// </summary>
+        public ChatDbContext() : base()
         {
         }
     }
