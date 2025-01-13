@@ -11,8 +11,8 @@
     <None Remove="botmate.db" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.*-*" />
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.*-*" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.1" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Luval.GenAIBotMate.Components\Luval.GenAIBotMate.Components.csproj" />
