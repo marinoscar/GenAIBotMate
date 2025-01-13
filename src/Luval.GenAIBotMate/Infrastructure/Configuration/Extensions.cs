@@ -117,6 +117,21 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         }
 
         /// <summary>
+        /// Adds SQL Server storage services to the service collection.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="sqlServerConnectionString">The SQL Server connection string.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotSqlServerStorageServices(this IServiceCollection s, string sqlServerConnectionString)
+        {
+            s.AddScoped<IChatDbContext, SqlServerChatDbContext>((i) =>
+            {
+                return new SqlServerChatDbContext(sqlServerConnectionString);
+            });
+            return s;
+        }
+
+        /// <summary>
         /// Adds storage services to the service collection.
         /// </summary>
         /// <param name="s">The service collection.</param>
@@ -164,6 +179,24 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
             s.AddGenAIBotSemanticKernel();
             s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
             s.AddGenAIBotPostgresStorageServices(postgresConnectionString);
+            return s;
+        }
+
+        /// <summary>
+        /// Adds default services to the service collection with a SQL Server database.
+        /// </summary>
+        /// <param name="s">The service collection.</param>
+        /// <param name="openAIKey">The OpenAI API key.</param>
+        /// <param name="sqlServerConnectionString">The SQL Server connection string.</param>
+        /// <param name="azureStorageConnectionString">The Azure storage connection string.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddGenAIBotServicesWithSqlServer(this IServiceCollection s, string openAIKey, string sqlServerConnectionString, string azureStorageConnectionString)
+        {
+            s.AddSingleton(new OpenAIKeyProvider(openAIKey));
+            s.AddGenAIBotServices();
+            s.AddGenAIBotSemanticKernel();
+            s.AddGenAIBotAzureMediaServices(azureStorageConnectionString);
+            s.AddGenAIBotSqlServerStorageServices(sqlServerConnectionString);
             return s;
         }
 
