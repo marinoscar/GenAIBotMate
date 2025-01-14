@@ -148,7 +148,7 @@ namespace Luval.GenAIBotMate.Components
                 };
                 Messages.Add(StreamedMessage);
 
-                await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
+                //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 
                 StreamedMessage = firstMessage
                     ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: PromptSettings).ConfigureAwait(false)
@@ -167,7 +167,7 @@ namespace Luval.GenAIBotMate.Components
 
                 //clear the user message
                 _userMessage = "";
-                await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
+                //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
             catch (Exception ex)
@@ -299,7 +299,9 @@ namespace Luval.GenAIBotMate.Components
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
-                await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
+            {
+                //await JSRuntime.InvokeVoidAsync("window.scrollToBottom");
+            }
         }
 
 
@@ -369,7 +371,7 @@ Here is the conversation:
             if (StreamedMessage != null)
             {
                 StreamedMessage.AgentResponse += result.Content; //append the message from the AI
-                await InvokeAsync(StateHasChanged);
+                //await InvokeAsync(StateHasChanged);
             }
         }
     }
