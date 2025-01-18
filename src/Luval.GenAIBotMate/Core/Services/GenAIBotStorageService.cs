@@ -249,6 +249,7 @@ namespace Luval.GenAIBotMate.Core.Services
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         public async Task DeleteChatSessionAsync(ulong chatSessionId, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Deleting chat session with ID {ChatSessionId}", chatSessionId);
             var chatSession = await GetChatSessionAsync(chatSessionId, cancellationToken).ConfigureAwait(false);
             if (chatSession == null)
             {
