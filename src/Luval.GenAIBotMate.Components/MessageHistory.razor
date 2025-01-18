@@ -41,15 +41,15 @@
         return input.Length > charCount ? input.Substring(0, charCount) : input;
     }
 
-    private async Task HandleNavigate(ChatSession session){
-        await Content.NavigateFunction?.Invoke(session);
-        await InvokeAsync(StateHasChanged);
+    private void HandleNavigate(ChatSession session){
+        Content.SessionId = session.Id;
+        Content.IsDelete = false;
     }
 
-    private async Task HandleDelete(ChatSession session)
+    private void HandleDelete(ChatSession session)
     {
         Debug.WriteLine("DELETE SESSION: " + session.Id, "UI-DEBUG");
-        await Content.DeleteFunction?.Invoke(session);
-        await InvokeAsync(StateHasChanged);
+        Content.SessionId = session.Id;
+        Content.IsDelete = true;
     }
 }
