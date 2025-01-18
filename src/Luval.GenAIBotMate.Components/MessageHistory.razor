@@ -12,11 +12,11 @@
                     <FluentButton 
                                 Appearance="Appearance.Outline" 
                                 Style="width:100%;"
-                                OnClick="@(() => HandleNavigate(item))">
+                                  @onclick="@(() => HandleNavigate(item))">
                         @item.Title</FluentButton>
                 </div>
                 <div style="flex-grow: 0;flex-basis: auto;">
-                    <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => HandleDelete(item))"  >
+                    <FluentButton @key="@string.Format("delbtn_{0}", item.Id)"  Appearance="Appearance.Lightweight" @onclick="@(() => HandleDelete(item))"  >
                         <FluentIcon Color="Color.Error" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size16.Delete())" />
                     </FluentButton>
                 </div>
