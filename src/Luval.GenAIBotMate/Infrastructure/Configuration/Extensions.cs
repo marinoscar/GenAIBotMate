@@ -3,7 +3,6 @@ using Luval.AuthMate.Core.Resolver;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
@@ -110,9 +109,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotPostgresStorageServices(this IServiceCollection s, string postgresConnectionString)
         {
-            s.AddDbContextPool<IChatDbContext, PostgresChatDbContext>((i) =>
+            s.AddTransient<IChatDbContext, PostgresChatDbContext>((i) =>
             {
-                i.UseNpgsql(postgresConnectionString);
+                return new PostgresChatDbContext(postgresConnectionString);
             });
             return s;
         }
@@ -125,9 +124,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotSqlServerStorageServices(this IServiceCollection s, string sqlServerConnectionString)
         {
-            s.AddDbContextPool<IChatDbContext, SqlServerChatDbContext>((i) =>
+            s.AddTransient<IChatDbContext, SqlServerChatDbContext>((i) =>
             {
-                i.UseSqlServer(sqlServerConnectionString);
+                return new SqlServerChatDbContext(sqlServerConnectionString);
             });
             return s;
         }
@@ -140,9 +139,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotSqliteStorageServices(this IServiceCollection s, string sqliteConnectionString = "Data Source=botmate.db")
         {
-            s.AddDbContextPool<IChatDbContext, SqliteChatDbContext>((i) =>
+            s.AddTransient<IChatDbContext, SqliteChatDbContext>((i) =>
             {
-                i.UseSqlite(sqliteConnectionString);
+                return new SqliteChatDbContext(sqliteConnectionString);
             });
             return s;
         }
