@@ -3,6 +3,7 @@ using Luval.AuthMate.Core.Resolver;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
@@ -109,9 +110,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotPostgresStorageServices(this IServiceCollection s, string postgresConnectionString)
         {
-            s.AddScoped<IChatDbContext, PostgresChatDbContext>((i) =>
+            s.AddDbContextPool<IChatDbContext, PostgresChatDbContext>((i) =>
             {
-                return new PostgresChatDbContext(postgresConnectionString);
+                i.UseNpgsql(postgresConnectionString);
             });
             return s;
         }
@@ -124,9 +125,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotSqlServerStorageServices(this IServiceCollection s, string sqlServerConnectionString)
         {
-            s.AddScoped<IChatDbContext, SqlServerChatDbContext>((i) =>
+            s.AddDbContextPool<IChatDbContext, SqlServerChatDbContext>((i) =>
             {
-                return new SqlServerChatDbContext(sqlServerConnectionString);
+                i.UseSqlServer(sqlServerConnectionString);
             });
             return s;
         }
@@ -139,9 +140,9 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddGenAIBotSqliteStorageServices(this IServiceCollection s, string sqliteConnectionString = "Data Source=botmate.db")
         {
-            s.AddScoped<IChatDbContext, SqliteChatDbContext>((i) =>
+            s.AddDbContextPool<IChatDbContext, SqliteChatDbContext>((i) =>
             {
-                return new SqliteChatDbContext(sqliteConnectionString);
+                i.UseSqlite(sqliteConnectionString);
             });
             return s;
         }
