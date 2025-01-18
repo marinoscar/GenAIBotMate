@@ -182,7 +182,7 @@ namespace Luval.GenAIBotMate.Components
         /// <summary>
         /// Loads a chat session asynchronously and updates the UI with the session's messages.
         /// </summary>
-        /// <param name="session">The chat session to load.</param>
+        /// <param name="sessionId">The chat session id to load.</param>
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <remarks>
         /// This method performs the following steps:
@@ -192,12 +192,12 @@ namespace Luval.GenAIBotMate.Components
         /// 4. Sets the streamed message to the last message in the session.
         /// 5. Invokes StateHasChanged to update the UI.
         /// </remarks>
-        protected virtual async Task LoadSessionAsync(ChatSession session, CancellationToken cancellationToken = default)
+        protected virtual async Task LoadSessionAsync(ulong? sessionId, CancellationToken cancellationToken = default)
         {
-            if (session == null) return;
-            if (session.Id <= 0) return;
+            if (sessionId == null) return;
+            if (sessionId <= 0) return;
             //gets the full history
-            var fullSession = await StorageService.GetChatSessionAsync(session.Id, cancellationToken);
+            var fullSession = await StorageService.GetChatSessionAsync(sessionId.Value, cancellationToken);
 
             if (fullSession.ChatMessages == null || !fullSession.ChatMessages.Any()) return;
             ChatTitle = fullSession.Title;
@@ -212,7 +212,6 @@ namespace Luval.GenAIBotMate.Components
         /// <summary>
         /// Starts a new chat session by clearing the current user message, resetting the active session ID, and clearing the message list.
         /// </summary>
-        /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         protected virtual async Task StartNewChatAsync()
         {
@@ -242,8 +241,6 @@ namespace Luval.GenAIBotMate.Components
             var history = new HistoryDto()
             {
                 Sessions = sessions,
-                DeleteFunction = HandleDelete,
-                NavigateFunction = HandleNavigation
             };
 
             _historyDialog = await DialogService.ShowPanelAsync<MessageHistory>(history, new DialogParameters<HistoryDto>()
@@ -257,6 +254,19 @@ namespace Luval.GenAIBotMate.Components
             });
 
             var result = await _historyDialog.Result;
+            if (result.Cancelled) return;
+            var dataResult = (HistoryDto)result.Data;
+            if (dataResult == null || dataResult?.SessionId == null || dataResult.IsDelete == null) return;
+
+            if (dataResult.IsDelete == true)
+            {
+                await HandleDelete(dataResult.SessionId);
+            }
+            else
+            {
+                await HandleNavigation(dataResult.SessionId);
+            }
+
         }
 
         private async Task HandleKeyDown(KeyboardEventArgs e)
@@ -271,16 +281,16 @@ namespace Luval.GenAIBotMate.Components
             }
         }
 
-        protected async Task HandleDelete(ChatSession session)
+        protected async Task HandleDelete(ulong? sessionId)
         {
-            if (session == null) return;
-            if (session.Id <= 0) return;
-            await StorageService.DeleteChatSessionAsync(session.Id);
+            if (sessionId == null) return;
+            if (sessionId <= 0) return;
+            await StorageService.DeleteChatSessionAsync(sessionId.Value);
         }
 
-        protected async Task HandleNavigation(ChatSession session)
+        protected async Task HandleNavigation(ulong? sessionId)
         {
-            await LoadSessionAsync(session);
+            await LoadSessionAsync(sessionId);
             await _historyDialog?.CloseAsync();
         }
         protected override  async Task OnInitializedAsync()
