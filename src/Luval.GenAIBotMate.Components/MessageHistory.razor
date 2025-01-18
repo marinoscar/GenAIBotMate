@@ -48,7 +48,7 @@
 
     private async Task HandleDelete(ChatSession session)
     {
-        Debug.WriteLine("Delete session: " + session.Id);
+        Debug.WriteLine("DELETE SESSION: " + session.Id, "UI-DEBUG");
         await Content.DeleteFunction?.Invoke(session);
         await InvokeAsync(StateHasChanged);
     }
