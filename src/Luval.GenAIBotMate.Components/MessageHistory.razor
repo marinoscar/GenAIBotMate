@@ -10,9 +10,9 @@
             <div style=" display: flex;width: 100%;">
                 <div style="flex-grow: 1;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                     <FluentButton 
-                                Appearance="Appearance.Outline" 
-                                Style="width:100%;"
-                                  @onclick="@(() => HandleNavigate(item))">
+                    Appearance="Appearance.Outline" 
+                    Style="width:100%;"
+                    @onclick="@(() => HandleNavigate(item))">
                         @item.Title</FluentButton>
                 </div>
                 <div style="flex-grow: 0;flex-basis: auto;">
@@ -29,6 +29,9 @@
     [Parameter]
     public HistoryDto Content { get; set; } = default!;
 
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
     private string TruncateString(string input)
     {
         return TruncateString(input, 30);
@@ -41,15 +44,18 @@
         return input.Length > charCount ? input.Substring(0, charCount) : input;
     }
 
-    private void HandleNavigate(ChatSession session){
+    private async Task HandleNavigate(ChatSession session)
+    {
         Content.SessionId = session.Id;
         Content.IsDelete = false;
+        await Dialog!.CloseAsync(DialogResult.Ok(Content));
     }
 
-    private void HandleDelete(ChatSession session)
+    private async Task HandleDelete(ChatSession session)
     {
         Debug.WriteLine("DELETE SESSION: " + session.Id, "UI-DEBUG");
         Content.SessionId = session.Id;
         Content.IsDelete = true;
+        await Dialog!.CloseAsync(DialogResult.Ok(Content));
     }
 }
