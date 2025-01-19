@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Luval.GenAIBotMate.Infrastructure.Configuration
 {
+    /// <summary>
+    /// Configuration settings for the media service.
+    /// </summary>
     public class MediaServiceConfig
     {
         /// <summary>
