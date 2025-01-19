@@ -4,6 +4,7 @@ using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -85,16 +86,20 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
         /// <param name="s">The service collection.</param>
         /// <param name="storageConnectionString">The Azure storage connection string.</param>
         /// <returns>The updated service collection.</returns>
-        public static IServiceCollection AddGenAIBotAzureMediaServices(this IServiceCollection s, string storageConnectionString)
+        public static IServiceCollection AddGenAIBotAzureMediaServices(this IServiceCollection s, string? storageConnectionString = null)
         {
-            s.AddScoped<MediaServiceConfig>((i) =>
+            s.AddSingleton<MediaServiceConfig>((i) =>
             {
+                var config = i.GetRequiredService<IConfiguration>();
+                var connString = config.GetSection("Azure:Storage:ConnectionString").Get<string>() ?? storageConnectionString;
+                var expirationString = config.GetSection("Azure:Storage:GenAIBotMate:SASExpiration").Get<string>() ?? "01:00:00";
+                var containerName = config.GetSection("Azure:Storage:GenAIBotMate:ContainerName").Get<string>() ?? "genaibot";
                 return new MediaServiceConfig()
                 {
-                    ConnectionString = storageConnectionString,
+                    ConnectionString = connString ?? throw new ArgumentNullException("Connection string not provided as parameter or a configuration value of Azure:Storage:ConnectionString"),
                     ProviderName = "Azure",
-                    ContainerName = "genaibot",
-                    SASExpiration = TimeSpan.FromHours(1)
+                    ContainerName = containerName,
+                    SASExpiration = TimeSpan.Parse(expirationString)
                 };
             });
             s.AddScoped<IMediaService, AzureMediaService>();
