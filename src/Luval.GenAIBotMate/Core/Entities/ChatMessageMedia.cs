@@ -46,14 +46,14 @@ namespace Luval.GenAIBotMate.Core.Entities
         public string MediaUrl { get; set; }
 
         /// <summary>
-        /// The name of the media file.
+        /// The name of the media file on the cloud storage.
         /// </summary>
         [MaxLength(500, ErrorMessage = "ProviderFileName cannot exceed 250 characters.")]
         [Column("ProviderFileName")]
         public string? ProviderFileName { get; set; }
 
         /// <summary>
-        /// The name of the media file.
+        /// The name of the media file on the user device.
         /// </summary>
         [MaxLength(500, ErrorMessage = "Name cannot exceed 250 characters.")]
         [Column("FileName")]
