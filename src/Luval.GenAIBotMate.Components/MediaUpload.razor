@@ -1,17 +1,19 @@
 ﻿@using Luval.GenAIBotMate.Infrastructure.Interfaces
 @using Luval.GenAIBotMate.Infrastructure.Data
 
-<FluentInputFile Id=@UploadControlId
-                 Mode=@Mode
+<FluentInputFile Id="@UploadControlId"
+                 DragDropZoneVisible="false"
+                 AnchorId="@AnchorId"
+                 Mode="@Mode"
                  Multiple="true"
-                 MaximumFileCount=@MaxFileCount
-                 MaximumFileSize=@MaxFileSize
-                 Accept=@Accept
-                 @bind-ProgressPercent="@ProgressPercent"
+                 MaximumFileCount="@MaxFileCount"
+                 MaximumFileSize="@MaxFileSize"
+                 Accept="@Accept"
+                 Style="@Style"
                  OnFileUploaded="@OnFileUploadedAsync"
                  OnCompleted="@OnUploadedCompleted"
-                 Style=@Style>
-    <ChildContent>
+                 OnProgressChange="@OnProgressChange">
+    @* <ChildContent>
         <label for="@UploadControlId">
             <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.ArrowUpload())" />
         </label>
@@ -28,7 +30,7 @@
             <br />
             <p>@FilesSupportedMessage</p>
         </div>
-    </ChildContent>
+    </ChildContent> *@
 </FluentInputFile>
 
 @code {
@@ -80,6 +82,12 @@
     public string? Style { get; set; } = "height: 300px;";
 
     /// <summary>
+    /// Gets or sets the identifier of the source component clickable by the end user.
+    /// </summary>
+    [Parameter]
+    public string AnchorId { get; set; } = string.Empty;
+
+    /// <summary>
     /// The <see cref="IMediaService"/ used to upload the files to the cloud provider
     /// </summary>
     [Inject]
@@ -90,6 +98,12 @@
     /// </summary>
     [Parameter]
     public EventCallback<IEnumerable<UploadedFileInfo>>? OnUploadCompleted { get; set; }
+
+    /// <summary>
+    /// Raise when a progression step is updated.
+    /// </summary>
+    [Parameter]
+    public EventCallback<FluentInputFileEventArgs> OnProgressChange { get; set; }
 
 
     int ProgressPercent = 0;
