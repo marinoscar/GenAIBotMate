@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Markdig.Extensions.Tables;
 using Luval.GenAIBotMate.Infrastructure.Data;
+using Luval.GenAIBotMate.Core.Entities;
 
 namespace Luval.GenAIBotMate.Components
 {
@@ -32,7 +33,7 @@ namespace Luval.GenAIBotMate.Components
         public string UserMessage { get; set; } = "";
 
         [Parameter]
-        public IEnumerable<string>? MediaFiles { get; set; }
+        public IEnumerable<ChatMessageMedia>? MediaFiles { get; set; }
 
         public MarkupString GetHtmlFromMD(string md)
         {
