@@ -101,6 +101,14 @@
                 <FluentStack Orientation="Orientation.Vertical">
                     <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
                         <FluentProgress Min="0" Max="100" Visible="@(progressPercent > 0)" Value="@progressPercent" />
+                        @if(mediaFiles != null && mediaFiles.Any()){
+                            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                                @foreach (var file in mediaFiles)
+                                {
+                                    <MediaFile PublicUrl="@file.PublicUri.ToString()" Width="50px" ShowCloseButton="true" />
+                                }
+                            </FluentStack>
+                        }
                         <textarea id="chat-bot-textarea"  @onkeydown="HandleKeyDown" placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"

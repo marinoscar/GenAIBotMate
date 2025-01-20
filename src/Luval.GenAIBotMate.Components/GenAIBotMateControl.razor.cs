@@ -402,6 +402,7 @@ Here is the conversation:
         {
             Debug.WriteLine("FileUploadCompleted");
             mediaFiles = files.Select(i => i.MediaFile).ToList();
+            StateHasChanged();
         }
     }
 
