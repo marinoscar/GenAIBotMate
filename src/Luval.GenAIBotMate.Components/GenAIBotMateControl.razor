@@ -76,8 +76,7 @@
             {
                 @if (this.Messages != null && this.Messages.Any())
                 {
-                    @foreach (var msg in this.Messages)
-                    {
+                    <Virtualize Items="Messages" Context="msg">
                         @if (!IsStreaming)
                         {
                             <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media" />
@@ -86,7 +85,7 @@
                         {
                             <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media" />
                         }
-                    }
+                    </Virtualize>
                 }
                 else
                 {
