@@ -157,7 +157,7 @@ namespace Luval.GenAIBotMate.Components
 
                 //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 var files = mediaFiles.Select(i => new UploadFile() {
-                    PublicUrl = i.PublicUri.ToString(), Name = i.ProviderName
+                    PublicUrl = i.PublicUri.ToString(), Name = i.ProviderFileName
                 }).ToList();
 
                 StreamedMessage = firstMessage

@@ -52,15 +52,20 @@
     <FluentStack>
         <div><FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.PersonChat())" /></div>
         <div>
-            @if(MediaFiles != null && MediaFiles.Any()){
-                foreach (var file in MediaFiles)
+            <FluentStack Orientation="Orientation.Vertical">
+                @if (MediaFiles != null && MediaFiles.Any())
                 {
-                    <img src="@file" alt="media" class="thumbnail">
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10">
+                        @foreach (var file in MediaFiles)
+                        {
+                            <img src="@file" alt="media" class="thumbnail">
+                        }
+                    </FluentStack>
                 }
-            }
-            <span>
-                @UserMessage
-            </span>
+                <span>
+                    @UserMessage
+                </span>
+            </FluentStack>
         </div>
     </FluentStack>
 </FluentCard>
