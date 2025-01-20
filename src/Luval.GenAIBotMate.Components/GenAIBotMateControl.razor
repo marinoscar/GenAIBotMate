@@ -54,7 +54,8 @@
 
 <div>
     <FluentLayout>
-        @if(!HideHeader){
+        @if (!HideHeader)
+        {
             <FluentHeader>
                 <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
                     @ChatTitle
@@ -99,17 +100,20 @@
         <div class="chat-box">
             <FluentCard Class="chat-card">
                 <FluentStack Orientation="Orientation.Vertical">
-                    <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
-                        <FluentProgress Min="0" Max="100" Visible="@(progressPercent > 0)" Value="@progressPercent" />
-                        @if(mediaFiles != null && mediaFiles.Any()){
+                    <FluentProgress Min="0" Max="100" Visible="@(progressPercent > 0)" Value="@progressPercent" Width="100%" />
+                    @if (mediaFiles != null && mediaFiles.Any())
+                    {
+                        <div>
                             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
                                 @foreach (var file in mediaFiles)
                                 {
                                     <MediaFile PublicUrl="@file.PublicUri.ToString()" Width="50px" ShowCloseButton="true" />
                                 }
                             </FluentStack>
-                        }
-                        <textarea id="chat-bot-textarea"  @onkeydown="HandleKeyDown" placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
+                        </div>
+                    }
+                    <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
+                        <textarea id="chat-bot-textarea" @onkeydown="HandleKeyDown" placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
                                       Style="margin-top:6px;"
@@ -121,13 +125,13 @@
                                       Title="Attach" />
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Open())"
                                       Title="New Chat"
-                                      OnClick="StartNewChatAsync"/>
+                                      OnClick="StartNewChatAsync" />
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Settings())"
                                       Title="Settings" />
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.History())"
                                       Title="History"
-                                      OnClick="ShowHistoryAsync"/>
-                        <MediaUpload AnchorId="MediaUploadButton" 
+                                      OnClick="ShowHistoryAsync" />
+                        <MediaUpload AnchorId="MediaUploadButton"
                                      OnUploadCompleted="@FileUploadCompleted"
                                      OnProgressChange="@(e =>
                                      {
