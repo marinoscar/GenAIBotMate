@@ -86,6 +86,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
                 //Upload the file to the blob storage
                 var res = await blobClient.UploadAsync(stream, true, cancellationToken);
+                await blobClient.SetMetadataAsync(new Dictionary<string, string>() { { "DeviceFileName", fileName } }, null, cancellationToken);
 
                 //Gets the properties
                 var props = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
@@ -106,6 +107,23 @@ namespace Luval.GenAIBotMate.Core.Services
                 _logger.LogError(ex, "Error occurred while uploading file {FileName}", fileName);
                 throw;
             }
+        }
+
+        public async Task<MediaFileInfo> GetMediaInfoFromProviderFileName(string providerFileName, CancellationToken cancellationToken = default)
+        {
+            var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
+            var props = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+            props.Value.Metadata.TryGetValue("DeviceFileName", out string? fileName);
+            return new MediaFileInfo
+            {
+                ProviderFileName = providerFileName,
+                ContentType = props.Value.ContentType,
+                ContentMD5 = Convert.ToBase64String(props.Value.ContentHash),
+                FileName = fileName,
+                ProviderName = "Azure",
+                PublicUri = new Uri(GetPublicUrl(providerFileName)),
+                Uri = blobClient.Uri
+            };
         }
 
         /// <summary>
