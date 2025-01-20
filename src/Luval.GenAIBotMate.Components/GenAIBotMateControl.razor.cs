@@ -32,7 +32,7 @@ namespace Luval.GenAIBotMate.Components
         private ulong _activeSessionId = 0;
         private IDialogReference? _historyDialog;
         private int progressPercent = 0;
-        private List<MediaFileInfo> mediaFiles = [];
+        private List<ChatMessageMedia> mediaFiles = [];
 
 
         /// <summary>
@@ -83,8 +83,17 @@ namespace Luval.GenAIBotMate.Components
         [Parameter]
         public required OpenAIPromptExecutionSettings PromptSettings { get; set; } = new OpenAIPromptExecutionSettings() { Temperature = 0.7 };
 
+        /// <summary>
+        /// The GenAIBotStorageService instance to be used for the chat.
+        /// </summary>
         [Inject]
         public required IGenAIBotStorageService StorageService { get; set; }
+
+        /// <summary>
+        /// The MediaService instance to be used for the chat.
+        /// </summary>
+        [Inject]
+        public required IMediaService MediaService { get; set; }
 
         [Inject]
         public required IJSRuntime JSRuntime { get; set; }
@@ -157,7 +166,7 @@ namespace Luval.GenAIBotMate.Components
 
                 //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 var files = mediaFiles.Select(i => new UploadFile() {
-                    PublicUrl = i.PublicUri.ToString(), Name = i.ProviderFileName
+                    PublicUrl = i.MediaUrl, Name = i.ProviderFileName
                 }).ToList();
 
                 StreamedMessage = firstMessage
@@ -282,6 +291,17 @@ namespace Luval.GenAIBotMate.Components
 
         }
 
+        protected virtual async Task OnMessageImageRemove(string providerFileName)
+        {
+            var file = mediaFiles.FirstOrDefault(i => i.ProviderFileName == providerFileName);
+            if (file != null)
+            {
+                mediaFiles.Remove(file);
+                
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
         private async Task HandleKeyDown(KeyboardEventArgs e)
         {
             if (!SubmitMessageOnEnterKey) return;
@@ -401,7 +421,15 @@ Here is the conversation:
         private void FileUploadCompleted(IEnumerable<UploadedFileInfo> files)
         {
             Debug.WriteLine("FileUploadCompleted");
-            mediaFiles = files.Select(i => i.MediaFile).ToList();
+            mediaFiles = files.Select(i => new ChatMessageMedia()
+            {
+                ProviderFileName = i.MediaFile.ProviderFileName,
+                ProviderName = i.MediaFile.ProviderName,
+                MediaUrl = i.MediaFile.PublicUri.ToString(),
+                FileName = i.MediaFile.FileName,
+                ContentType = i.MediaFile.ContentType,
+                ContentMD5 = i.MediaFile.ContentMD5,
+            }).ToList();
             StateHasChanged();
         }
     }
