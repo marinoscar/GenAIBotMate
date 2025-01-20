@@ -1,4 +1,13 @@
 ﻿<style>
+    .thumbnail {
+        width: 150px; /* Width of the thumbnail */
+        height: auto; /* Maintain aspect ratio */
+        border: 1px solid #ddd; /* Optional: border around the thumbnail */
+        padding: 5px; /* Optional: space around the image */
+        border-radius: 4px; /* Optional: rounded corners */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: shadow for 3D effect */
+    }
+
     .table {
         width: 100%;
         margin-bottom: 1rem;
@@ -43,6 +52,12 @@
     <FluentStack>
         <div><FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.PersonChat())" /></div>
         <div>
+            @if(MediaFiles != null && MediaFiles.Any()){
+                foreach (var file in MediaFiles)
+                {
+                    <img src="@file.PublicUri.ToString()" alt="@file.FileName" class="thumbnail">
+                }
+            }
             <span>
                 @UserMessage
             </span>
