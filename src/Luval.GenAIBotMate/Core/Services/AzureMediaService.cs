@@ -87,7 +87,6 @@ namespace Luval.GenAIBotMate.Core.Services
                 //Upload the file to the blob storage
                 var res = await blobClient.UploadAsync(stream, true, cancellationToken);
                 await blobClient.SetMetadataAsync(new Dictionary<string, string>() { { "DeviceFileName", fileName } }, null, cancellationToken);
-
                 //Gets the properties
                 var props = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
@@ -99,7 +98,8 @@ namespace Luval.GenAIBotMate.Core.Services
                     ProviderFileName = providerFileName, //file name on the cloud
                     Uri = blobClient.Uri, //uri of the file on the cloud
                     ContentMD5 = Convert.ToBase64String(res.Value.ContentHash),
-                    ContentType = props.Value.ContentType
+                    ContentType = props.Value.ContentType,
+                    PublicUri =  new Uri(GetPublicUrl(providerFileName))
                 };
             }
             catch (Exception ex)
