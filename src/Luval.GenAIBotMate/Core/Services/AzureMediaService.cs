@@ -109,6 +109,14 @@ namespace Luval.GenAIBotMate.Core.Services
             }
         }
 
+        /// <summary>
+        /// Asynchronously retrieves media file information from the provider file name.
+        /// </summary>
+        /// <param name="providerFileName">The provider file name of the media file.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the media file information.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when providerFileName is null or empty.</exception>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving the media file information.</exception>
         public async Task<MediaFileInfo> GetMediaInfoFromProviderFileName(string providerFileName, CancellationToken cancellationToken = default)
         {
             var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
