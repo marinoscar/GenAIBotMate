@@ -80,11 +80,11 @@
                     {
                         @if (!IsStreaming)
                         {
-                            <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media.Select(i => i.MediaUrl)" />
+                            <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media" />
                         }
                         else
                         {
-                            <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media.Select(i => i.MediaUrl)" />
+                            <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media" />
                         }
                     }
                 }
@@ -107,7 +107,7 @@
                             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
                                 @foreach (var file in mediaFiles)
                                 {
-                                    <MediaFile PublicUrl="@file.PublicUri.ToString()" Width="50px" ShowCloseButton="true" />
+                                    <MediaFile Media="@file" Width="50px" ShowCloseButton="true" />
                                 }
                             </FluentStack>
                         </div>
