@@ -130,9 +130,9 @@
     /// <param name="files">The collection of uploaded files.</param>
     void OnUploadedCompleted(IEnumerable<FluentInputFileEventArgs> files)
     {
-        if (OnUploadCompleted == null || !files.Any()) return;
+        if (!files.Any()) return;
         var uploadedFiles = files.Select(x => new UploadedFileInfo(x, mediaFiles.FirstOrDefault(y => y.FileName == x.Name)!));
-        OnUploadCompleted?.InvokeAsync(uploadedFiles);
+        OnUploadCompleted.InvokeAsync(uploadedFiles);
     }
 
     /// <summary>
