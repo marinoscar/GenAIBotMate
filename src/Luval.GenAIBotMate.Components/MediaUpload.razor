@@ -109,6 +109,11 @@
         mediaFiles.Add(result);
     }
 
+
+    /// <summary>
+    /// Invoked when all files have been completely uploaded.
+    /// </summary>
+    /// <param name="files">The collection of uploaded files.</param>
     void OnUploadedCompleted(IEnumerable<FluentInputFileEventArgs> files)
     {
         if (OnUploadCompleted == null || !files.Any()) return;
