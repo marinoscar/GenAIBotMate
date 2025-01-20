@@ -1,0 +1,62 @@
+﻿<style>
+    .thumbnail {
+    width: 150px; /* Width of the thumbnail */
+    height: auto; /* Maintain aspect ratio */
+    border: 1px solid #ddd; /* Optional: border around the thumbnail */
+    padding: 5px; /* Optional: space around the image */
+    border-radius: 4px; /* Optional: rounded corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: shadow for 3D effect */
+    }
+
+    .image-container {
+    position: relative;
+    display: inline-block; /* Or 'block' depending on your layout needs */
+    }
+
+    .img-close-button {
+    position: absolute;
+    top: -5px; /* Adjust based on your design */
+    right: -5px; /* Adjust based on your design */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 16px;
+    }
+
+    .img-close-button:focus {
+    outline: none;
+    }
+
+</style>
+
+<div class="image-container">
+    <img src="@PublicUrl" alt="media" class="thumbnail" style="width: @Width">
+    @if (ShowCloseButton)
+    {
+        <button class="img-close-button" @onclick="() => OnCloseClickAsync(PublicUrl)">X</button>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public required string Width { get; set; } = "150px";
+
+    [Parameter]
+    public required string PublicUrl { get; set; }
+
+    [Parameter]
+    public required bool ShowCloseButton { get; set; } = false;
+
+    [Parameter]
+    public Func<string, Task> OnDelete { get; set; } = default!;
+
+    protected virtual Task OnCloseClickAsync(string url)
+    {
+        Debug.WriteLine("Close clicked");
+        return OnDelete?.Invoke(url);
+    }
+
+}
