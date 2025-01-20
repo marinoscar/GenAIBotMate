@@ -346,8 +346,21 @@ namespace Luval.GenAIBotMate.Core.Services
             {
                 foreach (var file in files)
                 {
-                    var info = await _mediaService.UploadMediaAsync(file.Content, file.Name, cancellationToken);
-                    info.PublicUri = new Uri(await _mediaService.GetPublicUrlAsync(info.ProviderFileName, cancellationToken));
+                    MediaFileInfo? info = null;
+                    if (!string.IsNullOrEmpty(file.PublicUrl))
+                    {
+                        //use the file from the public URL
+                        info = new MediaFileInfo() { 
+                            PublicUri = new Uri(file.PublicUrl),
+                            ProviderFileName = file.Name
+                        };
+                    }
+                    else
+                    {
+                        //upload the file to the cloud
+                        info = await _mediaService.UploadMediaAsync(file.Content, file.Name, cancellationToken);
+                        info.PublicUri = new Uri(await _mediaService.GetPublicUrlAsync(info.ProviderFileName, cancellationToken));
+                    }
                     collection.Add(new ImageContent(info.PublicUri));
                     mediaUploaded.Add(info);
                 }
