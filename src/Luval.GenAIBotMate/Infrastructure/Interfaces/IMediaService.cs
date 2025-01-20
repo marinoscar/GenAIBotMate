@@ -49,5 +49,15 @@ namespace Luval.GenAIBotMate.Infrastructure.Interfaces
         /// <exception cref="ArgumentNullException">Thrown when providerFileName is null or empty.</exception>
         /// <exception cref="Exception">Thrown when an error occurs while retrieving the media file information.</exception>
         Task<MediaFileInfo> GetMediaInfoFromProviderFileName(string providerFileName, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes a media file from the blob storage.
+        /// </summary>
+        /// <param name="providerFileName">The provider file name of the media file to be deleted.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when providerFileName is null or empty.</exception>
+        /// <exception cref="Exception">Thrown when an error occurs during the delete process.</exception>
+        Task DeleteMediaAsync(string providerFileName, CancellationToken cancellationToken = default);
     }
 }

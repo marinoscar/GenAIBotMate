@@ -297,8 +297,8 @@ namespace Luval.GenAIBotMate.Components
             if (file != null)
             {
                 mediaFiles.Remove(file);
-                
                 await InvokeAsync(StateHasChanged);
+                await MediaService.DeleteMediaAsync(providerFileName);
             }
         }
 
