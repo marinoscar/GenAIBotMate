@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,7 +87,8 @@ namespace Luval.GenAIBotMate.Core.Services
                 var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
                 //Upload the file to the blob storage
                 var res = await blobClient.UploadAsync(stream, true, cancellationToken);
-                await blobClient.SetMetadataAsync(new Dictionary<string, string>() { { "DeviceFileName", fileName } }, null, cancellationToken);
+                var encondedFileName = WebUtility.UrlEncode(fileName);
+                await blobClient.SetMetadataAsync(new Dictionary<string, string>() { { "DeviceFileName", encondedFileName } }, null, cancellationToken);
                 //Gets the properties
                 var props = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
@@ -99,7 +101,8 @@ namespace Luval.GenAIBotMate.Core.Services
                     Uri = blobClient.Uri, //uri of the file on the cloud
                     ContentMD5 = Convert.ToBase64String(res.Value.ContentHash),
                     ContentType = props.Value.ContentType,
-                    PublicUri =  new Uri(GetPublicUrl(providerFileName))
+                    PublicUri =  new Uri(GetPublicUrl(providerFileName)),
+                    ProviderName = "Azure"
                 };
             }
             catch (Exception ex)
@@ -127,7 +130,7 @@ namespace Luval.GenAIBotMate.Core.Services
                 ProviderFileName = providerFileName,
                 ContentType = props.Value.ContentType,
                 ContentMD5 = Convert.ToBase64String(props.Value.ContentHash),
-                FileName = fileName,
+                FileName = WebUtility.UrlDecode(fileName),
                 ProviderName = "Azure",
                 PublicUri = new Uri(GetPublicUrl(providerFileName)),
                 Uri = blobClient.Uri
