@@ -100,6 +100,7 @@
             <FluentCard Class="chat-card">
                 <FluentStack Orientation="Orientation.Vertical">
                     <FluentStack Id="chat-input" Orientation="Orientation.Horizontal">
+                        <FluentProgress Min="0" Max="100" Visible="@(progressPercent > 0)" Value="@progressPercent" />
                         <textarea id="chat-bot-textarea"  @onkeydown="HandleKeyDown" placeholder="Ask me anything..." class="chat-input" @bind="_userMessage"></textarea>
                         <FluentButton Appearance="Appearance.Accent"
                                       IconStart="(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Send())"
@@ -108,7 +109,7 @@
                                       Disabled="@IsLoading" />
                     </FluentStack>
                     <FluentStack Orientation="Orientation.Horizontal">
-                        <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Attach())"
+                        <FluentButton Id="MediaUploadButton" IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Attach())"
                                       Title="Attach" />
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Open())"
                                       Title="New Chat"
@@ -118,6 +119,12 @@
                         <FluentButton IconEnd="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.History())"
                                       Title="History"
                                       OnClick="ShowHistoryAsync"/>
+                        <MediaUpload AnchorId="MediaUploadButton" 
+                                     OnUploadCompleted="@FileUploadCompleted"
+                                     OnProgressChange="@(e =>
+                                     {
+                                         progressPercent = e.ProgressPercent;
+                                     })" />
                         <FluentSpacer />
                     </FluentStack>
                 </FluentStack>
