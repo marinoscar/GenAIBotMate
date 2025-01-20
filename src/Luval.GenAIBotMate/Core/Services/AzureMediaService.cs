@@ -74,22 +74,29 @@ namespace Luval.GenAIBotMate.Core.Services
             }
             try
             {
+                //get a unique file name for the blob
                 var providerFileName = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+
                 _logger.LogInformation("Starting upload of file {FileName}", fileName);
 
-                _blobContainerClient.GetBlobClient(providerFileName);
+                //Creates the container if it doesn't exist
                 await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-                var blobClient = _blobContainerClient.GetBlobClient(fileName);
+
+                //Get a reference to the blob file using the unique name
+                var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
+                //Upload the file to the blob storage
                 var res = await blobClient.UploadAsync(stream, true, cancellationToken);
+
+                //Gets the properties
                 var props = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 _logger.LogInformation("Successfully uploaded file {FileName}", fileName);
 
                 return new MediaFileInfo
                 {
-                    FileName = blobClient.Name,
-                    ProviderFileName = providerFileName,
-                    Uri = blobClient.Uri,
+                    FileName = fileName, //local file nmae
+                    ProviderFileName = providerFileName, //file name on the cloud
+                    Uri = blobClient.Uri, //uri of the file on the cloud
                     ContentMD5 = Convert.ToBase64String(res.Value.ContentHash),
                     ContentType = props.Value.ContentType
                 };
