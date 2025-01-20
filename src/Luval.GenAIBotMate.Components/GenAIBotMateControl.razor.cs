@@ -177,6 +177,9 @@ namespace Luval.GenAIBotMate.Components
 
                 //clear the user message
                 _userMessage = "";
+                //clear the images
+                mediaFiles.Clear();
+
                 //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
                 Debug.WriteLine("Message Count: {0}", Messages.Count);
             }
