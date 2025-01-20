@@ -33,7 +33,7 @@ namespace Luval.GenAIBotMate.Components
         public string UserMessage { get; set; } = "";
 
         [Parameter]
-        public IEnumerable<ChatMessageMedia>? MediaFiles { get; set; }
+        public List<ChatMessageMedia>? MediaFiles { get; set; }
 
         public MarkupString GetHtmlFromMD(string md)
         {

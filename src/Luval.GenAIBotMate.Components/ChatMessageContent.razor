@@ -1,4 +1,6 @@
-﻿<style>
+﻿@using Luval.GenAIBotMate.Core.Entities
+
+<style>
 
     .table {
         width: 100%;
@@ -48,10 +50,14 @@
                 @if (MediaFiles != null && MediaFiles.Any())
                 {
                     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10">
-                        @foreach (var file in MediaFiles)
-                        {
-                            <MediaFile Media="@file" Width="150px" />
-                        }
+                        <Virtualize Items="MediaFiles" Context="file">
+                            <ItemContent>
+                                <MediaFile Media="@file" Width="150px" />
+                            </ItemContent>
+                            <Placeholder>
+                                <FluentSkeleton Shape="SkeletonShape.Rect"  Width="150px" Height="150px" Shimmer="true"></FluentSkeleton>
+                            </Placeholder>
+                        </Virtualize>
                     </FluentStack>
                 }
                 <span>
