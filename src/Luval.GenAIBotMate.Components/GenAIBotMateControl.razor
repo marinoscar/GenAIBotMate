@@ -79,11 +79,11 @@
                     {
                         @if (!IsStreaming)
                         {
-                            <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
+                            <ChatMessageContent @key="msg.Id" UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media.Select(i => i.MediaUrl)" />
                         }
                         else
                         {
-                            <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" />
+                            <ChatMessageContent UserMessage="@msg.UserMessage" AgentResponse="@msg.AgentResponse" MediaFiles="msg.Media.Select(i => i.MediaUrl)" />
                         }
                     }
                 }
