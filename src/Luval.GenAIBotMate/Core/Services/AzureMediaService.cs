@@ -112,6 +112,47 @@ namespace Luval.GenAIBotMate.Core.Services
             }
         }
 
+
+        /// <summary>
+        /// Deletes a media file from the blob storage.
+        /// </summary>
+        /// <param name="providerFileName">The provider file name of the media file to be deleted.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when providerFileName is null or empty.</exception>
+        /// <exception cref="Exception">Thrown when an error occurs during the delete process.</exception>
+        public async Task DeleteMediaAsync(string providerFileName, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(providerFileName))
+            {
+                _logger.LogError("Provider file name is null or empty");
+                throw new ArgumentNullException(nameof(providerFileName), "Provider file name cannot be null or empty");
+            }
+
+            try
+            {
+                _logger.LogInformation("Starting deletion of file {ProviderFileName}", providerFileName);
+
+                // Get a reference to the blob file using the unique name
+                var blobClient = _blobContainerClient.GetBlobClient(providerFileName);
+                var response = await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+
+                if (response)
+                {
+                    _logger.LogInformation("Successfully deleted file {ProviderFileName}", providerFileName);
+                }
+                else
+                {
+                    _logger.LogWarning("File {ProviderFileName} does not exist", providerFileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting file {ProviderFileName}", providerFileName);
+                throw;
+            }
+        }
+
         /// <summary>
         /// Asynchronously retrieves media file information from the provider file name.
         /// </summary>
