@@ -1,11 +1,13 @@
 ﻿using Luval.AuthMate.Core.Interfaces;
 using Luval.AuthMate.Core.Resolver;
+using Luval.GenAIBotMate.Core.Resolver;
 using Luval.GenAIBotMate.Core.Services;
 using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System;
@@ -33,6 +35,16 @@ namespace Luval.GenAIBotMate.Infrastructure.Configuration
             s.AddScoped<IUserResolver, WebUserResolver>();
             s.AddScoped<IGenAIBotStorageService, GenAIBotStorageService>();
             s.AddScoped<GenAIBotService>();
+            s.AddSingleton<GenAIBotResolver>((s) => {
+                using (var scope = s.CreateScope())
+                {
+                    return new GenAIBotResolver(
+                        scope.ServiceProvider.GetRequiredService<IGenAIBotStorageService>(),
+                        scope.ServiceProvider.GetRequiredService<IConfiguration>(), 
+                        scope.ServiceProvider.GetRequiredService<IUserResolver>(), 
+                        scope.ServiceProvider.GetRequiredService<ILogger<GenAIBotResolver>>());
+                }
+            });
             return s;
         }
 
