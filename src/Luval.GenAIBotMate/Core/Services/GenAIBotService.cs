@@ -350,10 +350,7 @@ namespace Luval.GenAIBotMate.Core.Services
                     if (!string.IsNullOrEmpty(file.PublicUrl))
                     {
                         //use the file from the public URL
-                        info = new MediaFileInfo() { 
-                            PublicUri = new Uri(file.PublicUrl),
-                            ProviderFileName = file.Name
-                        };
+                        info = await _mediaService.GetMediaInfoFromProviderFileName(file.Name, cancellationToken);
                     }
                     else
                     {
