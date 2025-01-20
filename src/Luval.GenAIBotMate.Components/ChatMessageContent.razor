@@ -55,7 +55,7 @@
             @if(MediaFiles != null && MediaFiles.Any()){
                 foreach (var file in MediaFiles)
                 {
-                    <img src="@file.PublicUri.ToString()" alt="@file.FileName" class="thumbnail">
+                    <img src="@file" alt="media" class="thumbnail">
                 }
             }
             <span>
