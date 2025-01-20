@@ -19,5 +19,10 @@ namespace Luval.GenAIBotMate.Infrastructure.Data
         /// Gets or sets the content of the file.
         /// </summary>
         public Stream Content { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the public url of the file.
+        /// </summary>
+        public string? PublicUrl { get; set; } = default!;
     }
 }
