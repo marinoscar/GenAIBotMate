@@ -1,4 +1,6 @@
-﻿<style>
+﻿@using Luval.GenAIBotMate.Core.Entities
+
+<style>
     .thumbnail {
     width: 150px; /* Width of the thumbnail */
     height: auto; /* Maintain aspect ratio */
@@ -31,10 +33,10 @@
 </style>
 
 <div class="image-container">
-    <img src="@PublicUrl" alt="media" class="thumbnail" style="width: @Width">
+    <img src="@Media.MediaUrl" alt="@Media.FileName" class="thumbnail" style="width: @Width">
     @if (ShowCloseButton)
     {
-        <button class="img-close-button" @onclick="() => OnCloseClickAsync(PublicUrl)">X</button>
+        <button class="img-close-button" @onclick="() => OnCloseClickAsync(Media.ProviderFileName)">X</button>
     }
 
 </div>
@@ -45,7 +47,7 @@
     public required string Width { get; set; } = "150px";
 
     [Parameter]
-    public required string PublicUrl { get; set; }
+    public required ChatMessageMedia Media { get; set; }
 
     [Parameter]
     public required bool ShowCloseButton { get; set; } = false;
@@ -53,10 +55,11 @@
     [Parameter]
     public Func<string, Task> OnDelete { get; set; } = default!;
 
-    protected virtual Task OnCloseClickAsync(string url)
+    protected virtual async Task OnCloseClickAsync(string? url)
     {
         Debug.WriteLine("Close clicked");
-        return OnDelete?.Invoke(url);
+        if (OnDelete == null) return;
+        await OnDelete?.Invoke(url);
     }
 
 }
