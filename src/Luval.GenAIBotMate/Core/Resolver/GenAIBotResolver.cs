@@ -14,24 +14,24 @@ namespace Luval.GenAIBotMate.Core.Resolver
     /// <summary>
     /// Resolves and manages GenAIBot instances.
     /// </summary>
-    public class BotResolver
+    public class GenAIBotResolver
     {
         private readonly IGenAIBotStorageService _botStorageService;
         private readonly IConfiguration _config;
         private readonly IUserResolver _userResolver;
-        private readonly ILogger<BotResolver> _logger;
+        private readonly ILogger<GenAIBotResolver> _logger;
         private record BotInfo(string Name, string AccountEmail);
         private static Dictionary<BotInfo, GenAIBot> _bots = new Dictionary<BotInfo, GenAIBot>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BotResolver"/> class.
+        /// Initializes a new instance of the <see cref="GenAIBotResolver"/> class.
         /// </summary>
         /// <param name="botStorageService">The bot storage service.</param>
         /// <param name="config">The configuration.</param>
         /// <param name="userResolver">The user resolver.</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">Thrown when any of the parameters are null.</exception>
-        public BotResolver(IGenAIBotStorageService botStorageService, IConfiguration config, IUserResolver userResolver, ILogger<BotResolver> logger)
+        public GenAIBotResolver(IGenAIBotStorageService botStorageService, IConfiguration config, IUserResolver userResolver, ILogger<GenAIBotResolver> logger)
         {
             _botStorageService = botStorageService ?? throw new ArgumentNullException(nameof(botStorageService));
             _config = config ?? throw new ArgumentNullException(nameof(config));
