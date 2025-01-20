@@ -1,0 +1,125 @@
+﻿@using Luval.GenAIBotMate.Infrastructure.Interfaces
+@using Luval.GenAIBotMate.Infrastructure.Data
+
+<FluentInputFile Id=@UploadControlId
+                 Mode=@Mode
+                 Multiple="true"
+                 MaximumFileCount=@MaxFileCount
+                 MaximumFileSize=@MaxFileSize
+                 Accept=@Accept
+                 @bind-ProgressPercent="@ProgressPercent"
+                 OnFileUploaded="@OnFileUploadedAsync"
+                 OnCompleted="@OnUploadedCompleted"
+                 Style=@Style>
+    <ChildContent>
+        <label for="@UploadControlId">
+            <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.ArrowUpload())" />
+        </label>
+
+        <div>
+            Drag files here you wish to upload,
+            or <label for="@UploadControlId">browse</label>
+            for them<span style="color: red;">*</span>.
+            <br />
+            <em>Maximum of @MaxFileCount.ToString() files allowed.</em>
+        </div>
+
+        <div>
+            <br />
+            <p>@FilesSupportedMessage</p>
+        </div>
+    </ChildContent>
+</FluentInputFile>
+
+@code {
+
+    /// <summary>
+    /// Message to display about the file types supported
+    /// </summary>
+    [Parameter]
+    public string? FilesSupportedMessage { get; set; }
+
+    /// <summary>
+    /// The max number of files allowed to be uploaded
+    /// </summary>
+    [Parameter]
+    public required int MaxFileCount { get; set; } = 4;
+
+    /// <summary>
+    /// The max size of the file allowed to be uploaded
+    /// </summary>
+    [Parameter]
+    public required long MaxFileSize { get; set; } = (10 * 1024 * 1024);
+
+
+    /// <summary>
+    /// The id for the upload control
+    /// </summary>
+    [Parameter]
+    public required string UploadControlId { get; set; } = "my-uploader";
+
+    /// <summary>
+    /// The <see cref="InputFileMode"/> of the upload control
+    /// </summary>
+    [Parameter]
+    public InputFileMode Mode { get; set; } = InputFileMode.SaveToTemporaryFolder;
+
+    /// <summary>
+    /// Gets or sets the filter for what file types the user can pick from the file input
+    /// dialog box. Example: ".gif, .jpg, .png, .doc", "audio/*", "video/*", "image/*"
+    /// See https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept for more
+    /// information.
+    /// </summary>
+    [Parameter]
+    public string Accept { get; set; } = "image/*";
+
+    /// <summary>
+    /// The stlye to apply to the upload control
+    /// </summary>
+    [Parameter]
+    public string? Style { get; set; } = "height: 300px;";
+
+    /// <summary>
+    /// The <see cref="IMediaService"/ used to upload the files to the cloud provider
+    /// </summary>
+    [Inject]
+    public required IMediaService MediaService { get; set; }
+
+    /// <summary>
+    /// Raise when all files are completely uploaded.
+    /// </summary>
+    [Parameter]
+    public EventCallback<IEnumerable<UploadedFileInfo>>? OnUploadCompleted { get; set; }
+
+
+    int ProgressPercent = 0;
+    private List<MediaFileInfo> mediaFiles = new();
+
+    async Task OnFileUploadedAsync(FluentInputFileEventArgs file)
+    {
+        var localFile = Path.GetTempFileName() + file.Name;
+        MediaFileInfo result;
+        //uploads to the cloud
+        using (FileStream fs = new(localFile, FileMode.Create))
+        {
+            await file.Stream!.CopyToAsync(fs);
+            result = await MediaService.UploadMediaAsync(fs, file.Name, CancellationToken.None);
+            await file.Stream!.DisposeAsync();
+        }
+        mediaFiles.Add(result);
+    }
+
+    void OnUploadedCompleted(IEnumerable<FluentInputFileEventArgs> files)
+    {
+        if (OnUploadCompleted == null || !files.Any()) return;
+        var uploadedFiles = files.Select(x => new UploadedFileInfo(x, mediaFiles.FirstOrDefault(y => y.FileName == x.Name)!));
+        OnUploadCompleted?.InvokeAsync(uploadedFiles);
+    }
+
+    /// <summary>
+    /// Provides information of the uploaded files
+    /// </summary>
+    /// <param name="InputFile">The <see cref="FluentInputFileEventArgs"/> with the input file</param>
+    /// <param name="MediaFile">The <see cref="MediaFileInfo"/> with the cloud file information</param>
+    public record UploadedFileInfo(FluentInputFileEventArgs InputFile, MediaFileInfo MediaFile);
+}
