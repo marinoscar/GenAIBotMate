@@ -107,7 +107,7 @@
                             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
                                 @foreach (var file in mediaFiles)
                                 {
-                                    <MediaFile Media="@file" Width="50px" ShowCloseButton="true" />
+                                    <MediaFile Media="@file" Width="50px" ShowCloseButton="true" OnDelete="@OnMessageImageRemove" />
                                 }
                             </FluentStack>
                         </div>
