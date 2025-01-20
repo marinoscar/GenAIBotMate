@@ -1,6 +1,7 @@
 ﻿using Luval.GenAIBotMate.Components.Infrastructure.Data;
 using Luval.GenAIBotMate.Core.Entities;
 using Luval.GenAIBotMate.Core.Services;
+using Luval.GenAIBotMate.Infrastructure.Data;
 using Luval.GenAIBotMate.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,9 +17,13 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Luval.GenAIBotMate.Components.MediaUpload;
 
 namespace Luval.GenAIBotMate.Components
 {
+    /// <summary>
+    /// Component for the GenAIBotMate control.
+    /// </summary>
     public partial class GenAIBotMateControl : ComponentBase
     {
 
@@ -26,6 +31,8 @@ namespace Luval.GenAIBotMate.Components
         private string _agentStreamMessage = "";
         private ulong _activeSessionId = 0;
         private IDialogReference? _historyDialog;
+        private int progressPercent = 0;
+        private List<MediaFileInfo> mediaFiles = [];
 
 
         /// <summary>
@@ -149,10 +156,13 @@ namespace Luval.GenAIBotMate.Components
                 Messages.Add(StreamedMessage);
 
                 //await InvokeAsync(StateHasChanged); // Update the UI to show the loading message
-                
+                var files = mediaFiles.Select(i => new UploadFile() {
+                    PublicUrl = i.PublicUri.ToString(), Name = i.ProviderName
+                }).ToList();
+
                 StreamedMessage = firstMessage
-                    ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: PromptSettings).ConfigureAwait(false)
-                    : await Service.AppendMessageToSession(_userMessage, StreamedMessage.ChatSessionId, settings: PromptSettings);
+                    ? await Service.SubmitMessageToNewSession(Bot.Id, _userMessage, settings: PromptSettings, files: files).ConfigureAwait(false)
+                    : await Service.AppendMessageToSession(_userMessage, StreamedMessage.ChatSessionId, settings: PromptSettings, files: files);
 
                 _activeSessionId = StreamedMessage.ChatSessionId; //keep track of the session id
                 IsLoading = false;
@@ -383,6 +393,12 @@ Here is the conversation:
                 StreamedMessage.AgentResponse += result.Content; //append the message from the AI
                 //await InvokeAsync(StateHasChanged);
             }
+        }
+
+        private void FileUploadCompleted(IEnumerable<UploadedFileInfo> files)
+        {
+            Debug.WriteLine("FileUploadCompleted");
+            mediaFiles = files.Select(i => i.MediaFile).ToList();
         }
     }
 
